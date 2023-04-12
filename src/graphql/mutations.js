@@ -8,16 +8,18 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -31,6 +33,8 @@ export const createUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -44,16 +48,18 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -67,6 +73,8 @@ export const updateUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -80,16 +88,18 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -103,6 +113,8 @@ export const deleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -116,14 +128,15 @@ export const createUserProfile = /* GraphQL */ `
   ) {
     createUserProfile(input: $input, condition: $condition) {
       id
-      owner
+      name
       age
       weight
       height
       gender
       fitnessGoal
-      createdAt
       updatedAt
+      createdAt
+      owner
     }
   }
 `;
@@ -134,14 +147,15 @@ export const updateUserProfile = /* GraphQL */ `
   ) {
     updateUserProfile(input: $input, condition: $condition) {
       id
-      owner
+      name
       age
       weight
       height
       gender
       fitnessGoal
-      createdAt
       updatedAt
+      createdAt
+      owner
     }
   }
 `;
@@ -152,14 +166,15 @@ export const deleteUserProfile = /* GraphQL */ `
   ) {
     deleteUserProfile(input: $input, condition: $condition) {
       id
-      owner
+      name
       age
       weight
       height
       gender
       fitnessGoal
-      createdAt
       updatedAt
+      createdAt
+      owner
     }
   }
 `;
@@ -173,20 +188,24 @@ export const createWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -225,20 +244,24 @@ export const updateWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -277,20 +300,24 @@ export const deleteWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -332,6 +359,9 @@ export const createExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -370,6 +400,9 @@ export const updateExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -408,6 +441,9 @@ export const deleteExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner

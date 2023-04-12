@@ -1,57 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateUserProfile = /* GraphQL */ `
-  subscription OnCreateUserProfile(
-    $filter: ModelSubscriptionUserProfileFilterInput
-  ) {
-    onCreateUserProfile(filter: $filter) {
-      id
-      owner
-      age
-      weight
-      height
-      gender
-      fitnessGoal
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateUserProfile = /* GraphQL */ `
-  subscription OnUpdateUserProfile(
-    $filter: ModelSubscriptionUserProfileFilterInput
-  ) {
-    onUpdateUserProfile(filter: $filter) {
-      id
-      owner
-      age
-      weight
-      height
-      gender
-      fitnessGoal
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteUserProfile = /* GraphQL */ `
-  subscription OnDeleteUserProfile(
-    $filter: ModelSubscriptionUserProfileFilterInput
-  ) {
-    onDeleteUserProfile(filter: $filter) {
-      id
-      owner
-      age
-      weight
-      height
-      gender
-      fitnessGoal
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser(
     $filter: ModelSubscriptionUserFilterInput
@@ -59,16 +8,18 @@ export const onCreateUser = /* GraphQL */ `
   ) {
     onCreateUser(filter: $filter, owner: $owner) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -82,6 +33,8 @@ export const onCreateUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -95,16 +48,18 @@ export const onUpdateUser = /* GraphQL */ `
   ) {
     onUpdateUser(filter: $filter, owner: $owner) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -118,6 +73,8 @@ export const onUpdateUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -131,16 +88,18 @@ export const onDeleteUser = /* GraphQL */ `
   ) {
     onDeleteUser(filter: $filter, owner: $owner) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -154,8 +113,67 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
+      owner
+    }
+  }
+`;
+export const onCreateUserProfile = /* GraphQL */ `
+  subscription OnCreateUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onCreateUserProfile(filter: $filter, owner: $owner) {
+      id
+      name
+      age
+      weight
+      height
+      gender
+      fitnessGoal
+      updatedAt
+      createdAt
+      owner
+    }
+  }
+`;
+export const onUpdateUserProfile = /* GraphQL */ `
+  subscription OnUpdateUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onUpdateUserProfile(filter: $filter, owner: $owner) {
+      id
+      name
+      age
+      weight
+      height
+      gender
+      fitnessGoal
+      updatedAt
+      createdAt
+      owner
+    }
+  }
+`;
+export const onDeleteUserProfile = /* GraphQL */ `
+  subscription OnDeleteUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onDeleteUserProfile(filter: $filter, owner: $owner) {
+      id
+      name
+      age
+      weight
+      height
+      gender
+      fitnessGoal
+      updatedAt
+      createdAt
       owner
     }
   }
@@ -170,20 +188,24 @@ export const onCreateWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -222,20 +244,24 @@ export const onUpdateWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -274,20 +300,24 @@ export const onDeleteWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -329,6 +359,9 @@ export const onCreateExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -367,6 +400,9 @@ export const onUpdateExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -405,6 +441,9 @@ export const onDeleteExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner

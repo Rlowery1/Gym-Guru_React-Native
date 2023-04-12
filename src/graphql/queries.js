@@ -1,57 +1,22 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getUserProfile = /* GraphQL */ `
-  query GetUserProfile($id: ID!) {
-    getUserProfile(id: $id) {
-      id
-      owner
-      age
-      weight
-      height
-      gender
-      fitnessGoal
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listUserProfiles = /* GraphQL */ `
-  query ListUserProfiles(
-    $filter: ModelUserProfileFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listUserProfiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        owner
-        age
-        weight
-        height
-        gender
-        fitnessGoal
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
+      profileId
       profile {
         id
-        owner
+        name
         age
         weight
         height
         gender
         fitnessGoal
-        createdAt
         updatedAt
+        createdAt
+        owner
       }
       workouts {
         items {
@@ -65,6 +30,8 @@ export const getUser = /* GraphQL */ `
         }
         nextToken
       }
+      lastUpdated
+      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -80,22 +47,65 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserProfile = /* GraphQL */ `
+  query GetUserProfile($id: ID!) {
+    getUserProfile(id: $id) {
+      id
+      name
+      age
+      weight
+      height
+      gender
+      fitnessGoal
+      updatedAt
+      createdAt
+      owner
+    }
+  }
+`;
+export const listUserProfiles = /* GraphQL */ `
+  query ListUserProfiles(
+    $filter: ModelUserProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserProfiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        age
+        weight
+        height
+        gender
+        fitnessGoal
+        updatedAt
+        createdAt
         owner
       }
       nextToken
@@ -109,20 +119,24 @@ export const getWorkout = /* GraphQL */ `
       userId
       user {
         id
+        profileId
         profile {
           id
-          owner
+          name
           age
           weight
           height
           gender
           fitnessGoal
-          createdAt
           updatedAt
+          createdAt
+          owner
         }
         workouts {
           nextToken
         }
+        lastUpdated
+        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -163,6 +177,9 @@ export const listWorkouts = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -190,6 +207,9 @@ export const getExercise = /* GraphQL */ `
         userId
         user {
           id
+          profileId
+          lastUpdated
+          setLastUpdated
           createdAt
           updatedAt
           owner

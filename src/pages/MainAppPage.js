@@ -1,5 +1,5 @@
 // src/pages/MainAppPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   NavigationContainer,
 } from '@react-navigation/native';
@@ -22,19 +22,59 @@ import {
 import CommonStyles from '../styles/GlobalStyles';
 import WorkoutCard from '../components/WorkoutCard';
 import ProfileEditScreen from './ProfileEditScreen';
-
+import ProfileScreen from './ProfileScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { getUserProfile } from '../graphql/queries';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import WorkoutScreen from './WorkoutScreen';
 const HomeScreen = () => {
-  const [userData, setUserData] = useState({
-    name: 'John Doe',
-    workoutsCompleted: 5,
-    totalTimeSpent: '2 hours',
-    avatarUrl: 'https://via.placeholder.com/150',
-  });
+  const [userData, setUserData] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState('');
 
-  useEffect(() => {
-    // Fetch user data and workout progress from the database
-    // setUserData(fetchedUserData);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const currentUser = await Auth.currentAuthenticatedUser();
+          const ownerId = currentUser.attributes.sub;
+
+          const userProfileData = await API.graphql(
+            graphqlOperation(getUserProfile, { id: ownerId }),
+          );
+          const userProfile = userProfileData.data.getUserProfile;
+
+          if (userProfile) {
+            setUserData({
+              name: userProfile.name,
+              workoutsCompleted: userProfile.workoutsCompleted,
+              totalTimeSpent: userProfile.totalTimeSpent,
+              avatarUrl: userProfile.avatarUrl,
+            });
+            setLastUpdated(userProfile.updatedAt);
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      };
+
+      fetchUserData();
+    }, []),
+  );
+
+  if (!userData) {
+    return (
+      <View style={styles.homeContainer}>
+        <Text style={CommonStyles.title}>Welcome!</Text>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => navigation.navigate('ProfileEdit')}
+        >
+          <Text style={styles.profileButtonText}>Create your profile</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.homeContainer}>
@@ -46,79 +86,16 @@ const HomeScreen = () => {
         <Text style={CommonStyles.title}>Your Workout Progress:</Text>
         <Text>Workouts completed: {userData.workoutsCompleted}</Text>
         <Text>Total time spent: {userData.totalTimeSpent}</Text>
+        <Text>Last updated: {lastUpdated}</Text>
         {/* Display recent achievements here... */}
       </View>
     </View>
   );
 };
 
-const WorkoutsScreen = () => {
-  const [workouts, setWorkouts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const categories = ['All', 'Cardio', 'Strength', 'Yoga', 'Pilates'];
 
-  useEffect(() => {
-    // Fetch workouts data from the database
-    // setWorkouts(fetchedWorkouts);
-  }, [selectedCategory]);
-  const handleCategoryPress = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const filterWorkouts = (category) => {
-    setSelectedCategory(category);
-    // Fetch workouts data for the selected category from the database
-    // setWorkouts(filteredWorkouts);
-  };
-  const renderItem = ({ item }) => <WorkoutCard workout={item} />;
-
-  return (
-    <SafeAreaView style={styles.workoutsScreenContainer}>
-      <ScrollView contentContainerStyle={styles.workoutsScreenContentContainer}>
-        <View style={styles.categoriesContainer}>
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              style={[
-                styles.filterButton,
-                selectedCategory === category
-                  ? styles.selectedFilterButton
-                  : null,
-              ]}
-              onPress={() => filterWorkouts(category)}
-            >
-              <Text style={CommonStyles.title}>{category}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <FlatList
-          data={workouts}
-          renderItem={({ item }) => <WorkoutCard workout={item} />}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
 const ProgressScreen = () => <Text>Progress Screen</Text>;
-const ProfileScreen = ({ navigation }) => {
-  const handleEditProfile = () => {
-    navigation.navigate('ProfileEdit');
-  };
 
-  return (
-    <View style={styles.profileContainer}>
-      <Text>Name: John Doe</Text>
-      <Text>Age: 25</Text>
-      <Text>Weight: 70 kg</Text>
-      <Text>Height: 180 cm</Text>
-      <Text>Gender: Male</Text>
-      <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-        <Text>Edit Profile</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
 
 const ProfileStack = createStackNavigator();
 
@@ -127,8 +104,8 @@ const ProfileStackNavigator = () => {
     <ProfileStack.Navigator>
       <ProfileStack.Screen
         name="Profile"
-        component={ProfileScreen}
-        options={{ headerShown: false }} // Hide the header for the Profile screen
+        component={ProfileScreen} // Use the imported ProfileScreen
+        options={{ headerShown: false }}
       />
       <ProfileStack.Screen name="ProfileEdit" component={ProfileEditScreen} />
     </ProfileStack.Navigator>
@@ -141,7 +118,7 @@ const MainAppPage = () => {
   return (
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Workouts" component={WorkoutsScreen} />
+        <Tab.Screen name="Workouts" component={WorkoutScreen} />
         <Tab.Screen name="Progress" component={ProgressScreen} />
         <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       </Tab.Navigator>
