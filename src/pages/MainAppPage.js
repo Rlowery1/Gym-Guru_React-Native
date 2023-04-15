@@ -1,9 +1,6 @@
 // src/pages/MainAppPage.js
 import React, { useState } from 'react';
 import {
-  NavigationContainer,
-} from '@react-navigation/native';
-import {
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
 import {
@@ -20,7 +17,6 @@ import {
   ScrollView
 } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
-import WorkoutCard from '../components/WorkoutCard';
 import ProfileEditScreen from './ProfileEditScreen';
 import ProfileScreen from './ProfileScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,7 +24,10 @@ import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { getUserProfile } from '../graphql/queries';
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import WorkoutScreen from './WorkoutScreen';
-const HomeScreen = () => {
+import WorkoutDay from '../components/WorkoutDay';
+
+
+const HomeScreen = ({ navigation }) => { // Add navigation prop here
   const [userData, setUserData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState('');
 
@@ -68,7 +67,7 @@ const HomeScreen = () => {
         <Text style={CommonStyles.title}>Welcome!</Text>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => navigation.navigate('ProfileEdit')}
+          onPress={() => navigation.navigate('ProfileEdit')} // Use the navigation prop here
         >
           <Text style={styles.profileButtonText}>Create your profile</Text>
         </TouchableOpacity>
@@ -111,76 +110,52 @@ const ProfileStackNavigator = () => {
     </ProfileStack.Navigator>
   );
 };
+const WorkoutStack = createStackNavigator();
+
+const WorkoutStackNavigator = () => {
+  return (
+    <WorkoutStack.Navigator>
+      <WorkoutStack.Screen
+        name="Workout"
+        component={WorkoutScreen}
+        options={{ headerShown: false }}
+      />
+      <WorkoutStack.Screen name="WorkoutDay" component={WorkoutDay} />
+    </WorkoutStack.Navigator>
+  );
+};
+
 
 const Tab = createBottomTabNavigator();
 
 const MainAppPage = () => {
+  const Tab = createBottomTabNavigator();
+
   return (
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Workouts" component={WorkoutScreen} />
-        <Tab.Screen name="Progress" component={ProgressScreen} />
-        <Tab.Screen name="Profile" component={ProfileStackNavigator} />
-      </Tab.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
+      <Tab.Screen name="Progress" component={ProgressScreen} />
+      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
+    </Tab.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
-  workoutsScreenContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  workoutsScreenContentContainer: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-  },
-  categoriesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-    paddingHorizontal: 10,
-  },
-  filterButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 20, // Add borderRadius
-    marginHorizontal: 5, // Add marginHorizontal
-  },
-  selectedFilterButton: {
-    backgroundColor: '#eee',
-  },
-  workoutCard: {
-  padding: 15,
-  borderBottomWidth: 1,
-  borderColor: '#ddd',
-  backgroundColor: '#fff',
-  borderRadius: 5,
-  marginBottom: 10,
-  elevation: 2,
-},
   homeContainer: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+  profileButton: {
+    backgroundColor: '#FFA500',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
   },
-  subtitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+  profileButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
   avatarContainer: {
     flexDirection: 'row',
@@ -194,45 +169,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   progressContainer: {
-    paddingHorizontal: 20,
-  },
-  profileContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-},
-profileImage: {
-width: 150,
-height: 150,
-borderRadius: 75,
-marginBottom: 20,
-},
-name: {
-fontSize: 24,
-fontWeight: 'bold',
-marginBottom: 5,
-},
-username: {
-fontSize: 18,
-color: '#777',
-marginBottom: 20,
-},
-bio: {
-fontSize: 16,
-textAlign: 'center',
-paddingHorizontal: 20,
-marginBottom: 20,
-},
-editButton: {
-backgroundColor: '#3498db',
-paddingHorizontal: 30,
-paddingVertical: 10,
-borderRadius: 5,
-},
-editText: {
-color: '#fff',
-fontSize: 16,
-},
+  },
 });
+
 export default MainAppPage;
+

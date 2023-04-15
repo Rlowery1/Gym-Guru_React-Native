@@ -1,92 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import React, { useState, useEffect} from 'react';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { getWorkout } from '../data/workouts';
 import WorkoutCard from '../components/WorkoutCard';
-import GlobalStyles from '../styles/GlobalStyles';
-import styles from '../styles/WorkoutScreenStyles';
-
-const WorkoutScreen = () => {
-  const [allWorkouts, setAllWorkouts] = useState([]);
-  const [workouts, setWorkouts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const selectedExercises = [
-  'Bench Press',
-  'Biceps curl',
-  'Crunch',
-  'Deadlift',
-  'Lunge',
-  'Plank',
-  'Pull up',
-  'Push up',
-  'Sit-up',
-  'Squat',
-];
+import WorkoutDaysSelector from '../components/WorkoutDaysSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 
-// Modify the fetchWorkoutsFromAPI function
-useEffect(() => {
-  const fetchWorkoutsFromAPI = async () => {
-  try {
-    const apiUrl = 'https://wger.de/api/v2/exercise/?language=2&limit=100';
-
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Authorization': 'Token 5bca046583c512c3ca985b43e09dfdac7b68bf5a'
-      }
-    });
-    const data = await response.json();
-    const englishExercises = data.results;
-    const filteredExercises = englishExercises.filter((exercise) =>
-      selectedExercises.includes(exercise.name)
-    );
-    setAllWorkouts(filteredExercises);
-    setWorkouts(filteredExercises);
-  } catch (error) {
-    console.error('Error fetching workouts:', error);
-  }
-};
+const WorkoutScreen = ({ onDaysChange }) => {
+  const navigation = useNavigation();
+  const [week, setWeek] = useState(1);
+  const [days, setDays] = useState(3);
+  const [daysPerWeek, setDaysPerWeek] = useState(3);
+  const [fitnessGoal, setFitnessGoal] = useState(null);
 
 
-
-  fetchWorkoutsFromAPI();
-}, []);
-
-  const categories = ['All', 'Strength Training', 'Cardio', 'Flexibility'];
-
-  const fetchWorkouts = (category) => {
-    if (category === 'All') {
-      return allWorkouts;
-    } else {
-      return allWorkouts.filter((workout) => workout.category.name === category);
+  const handleWeekChange = (change) => {
+    const newWeek = week + change;
+    if (newWeek >= 1 && newWeek <= 4) {
+      setWeek(newWeek);
     }
   };
 
-  const filterWorkouts = (category) => {
-    setSelectedCategory(category);
-    setWorkouts(fetchWorkouts(category));
-  };
+  const handleDayPress = (day) => {
+  navigation.navigate('WorkoutDay', { week, day, days: daysPerWeek });
+};
 
-  const renderItem = ({ item }) => <WorkoutCard workout={item} />;
+useFocusEffect(
+    React.useCallback(() => {
+      const fetchWorkoutSettings = async () => {
+        const savedWorkoutDays = await AsyncStorage.getItem('workoutDays');
+        const savedFitnessGoal = await AsyncStorage.getItem('fitnessGoal');
+
+        if (savedWorkoutDays) {
+          setDaysPerWeek(parseInt(savedWorkoutDays, 10));
+        }
+
+        if (savedFitnessGoal) {
+          setFitnessGoal(savedFitnessGoal);
+        }
+      };
+
+      fetchWorkoutSettings();
+    }, [])
+  );
+
+
 
   return (
-    <SafeAreaView>
-      <FlatList
-        contentContainerStyle={styles.scrollView}
-        data={workouts}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </SafeAreaView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => handleWeekChange(-1)}>
+          <Text style={styles.buttonText}>{'<'}</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>
+          Week {week} - {daysPerWeek} Days
+        </Text>
+        <TouchableOpacity onPress={() => handleWeekChange(1)}>
+          <Text style={styles.buttonText}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.daysContainer}>
+        {Array.from({ length: daysPerWeek }, (_, i) => (
+          <TouchableOpacity
+            key={i}
+            style={styles.dayButton}
+            onPress={() => handleDayPress(i + 1)}
+          >
+            <Text style={styles.dayText}>Day {i + 1}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    <WorkoutDaysSelector daysPerWeek={daysPerWeek} />
+  </View>
   );
 };
 
-const scrollViewStyles = StyleSheet.create({
-  scrollView: {
-    justifyContent: 'space-evenly',
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: '500',
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  dayButton: {
+    backgroundColor: '#4F6D7A',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    minWidth: '48%',
+    alignItems: 'center',
+  },
+  dayText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: '500',
   },
 });
 

@@ -5,8 +5,8 @@ import { Amplify } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 import AppNavigator from './src/navigation/AppNavigator';
 import config from './src/aws-exports';
+
 Amplify.configure(awsconfig);
-Amplify.configure(config);
 function App() {
   return (
     <NavigationContainer>

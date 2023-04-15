@@ -79,6 +79,7 @@ const ProfileScreen = ({ navigation }) => {
       <Text style={GlobalStyles.age}>Weight: {userData.weight} kg</Text>
       <Text style={GlobalStyles.age}>Height: {userData.height} cm</Text>
       <Text style={GlobalStyles.age}>Gender: {userData.gender}</Text>
+      <Text style={GlobalStyles.age}>Workout Days: {userData.workoutDays}</Text>
       <Text style={GlobalStyles.age}>Fitness Goal: {userData.fitnessGoal}</Text>
       <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
         <Text style={styles.editText}>Edit Profile</Text>

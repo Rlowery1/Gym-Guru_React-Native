@@ -14,6 +14,7 @@ export const getUser = /* GraphQL */ `
         height
         gender
         fitnessGoal
+        workoutDays
         updatedAt
         createdAt
         owner
@@ -30,8 +31,19 @@ export const getUser = /* GraphQL */ `
         }
         nextToken
       }
+      workoutSessions {
+        items {
+          id
+          userId
+          date
+          createdAt
+          updatedAt
+          userWorkoutSessionsId
+          owner
+        }
+        nextToken
+      }
       lastUpdated
-      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -56,6 +68,7 @@ export const listUsers = /* GraphQL */ `
           height
           gender
           fitnessGoal
+          workoutDays
           updatedAt
           createdAt
           owner
@@ -63,8 +76,10 @@ export const listUsers = /* GraphQL */ `
         workouts {
           nextToken
         }
+        workoutSessions {
+          nextToken
+        }
         lastUpdated
-        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -83,6 +98,7 @@ export const getUserProfile = /* GraphQL */ `
       height
       gender
       fitnessGoal
+      workoutDays
       updatedAt
       createdAt
       owner
@@ -104,6 +120,7 @@ export const listUserProfiles = /* GraphQL */ `
         height
         gender
         fitnessGoal
+        workoutDays
         updatedAt
         createdAt
         owner
@@ -128,6 +145,7 @@ export const getWorkout = /* GraphQL */ `
           height
           gender
           fitnessGoal
+          workoutDays
           updatedAt
           createdAt
           owner
@@ -135,8 +153,10 @@ export const getWorkout = /* GraphQL */ `
         workouts {
           nextToken
         }
+        workoutSessions {
+          nextToken
+        }
         lastUpdated
-        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -179,7 +199,6 @@ export const listWorkouts = /* GraphQL */ `
           id
           profileId
           lastUpdated
-          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -209,7 +228,6 @@ export const getExercise = /* GraphQL */ `
           id
           profileId
           lastUpdated
-          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -262,6 +280,167 @@ export const listExercises = /* GraphQL */ `
         createdAt
         updatedAt
         workoutExercisesId
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getWorkoutSession = /* GraphQL */ `
+  query GetWorkoutSession($id: ID!) {
+    getWorkoutSession(id: $id) {
+      id
+      userId
+      user {
+        id
+        profileId
+        profile {
+          id
+          name
+          age
+          weight
+          height
+          gender
+          fitnessGoal
+          workoutDays
+          updatedAt
+          createdAt
+          owner
+        }
+        workouts {
+          nextToken
+        }
+        workoutSessions {
+          nextToken
+        }
+        lastUpdated
+        createdAt
+        updatedAt
+        owner
+      }
+      date
+      exercises {
+        items {
+          id
+          workoutSessionId
+          exerciseId
+          name
+          sets
+          reps
+          weights
+          createdAt
+          updatedAt
+          workoutSessionExercisesId
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      userWorkoutSessionsId
+      owner
+    }
+  }
+`;
+export const listWorkoutSessions = /* GraphQL */ `
+  query ListWorkoutSessions(
+    $filter: ModelWorkoutSessionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listWorkoutSessions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userId
+        user {
+          id
+          profileId
+          lastUpdated
+          createdAt
+          updatedAt
+          owner
+        }
+        date
+        exercises {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        userWorkoutSessionsId
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getSessionExercise = /* GraphQL */ `
+  query GetSessionExercise($id: ID!) {
+    getSessionExercise(id: $id) {
+      id
+      workoutSessionId
+      workoutSession {
+        id
+        userId
+        user {
+          id
+          profileId
+          lastUpdated
+          createdAt
+          updatedAt
+          owner
+        }
+        date
+        exercises {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        userWorkoutSessionsId
+        owner
+      }
+      exerciseId
+      name
+      sets
+      reps
+      weights
+      createdAt
+      updatedAt
+      workoutSessionExercisesId
+      owner
+    }
+  }
+`;
+export const listSessionExercises = /* GraphQL */ `
+  query ListSessionExercises(
+    $filter: ModelSessionExerciseFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSessionExercises(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        workoutSessionId
+        workoutSession {
+          id
+          userId
+          date
+          createdAt
+          updatedAt
+          userWorkoutSessionsId
+          owner
+        }
+        exerciseId
+        name
+        sets
+        reps
+        weights
+        createdAt
+        updatedAt
+        workoutSessionExercisesId
         owner
       }
       nextToken

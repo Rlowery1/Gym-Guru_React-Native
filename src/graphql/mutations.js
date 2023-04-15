@@ -17,6 +17,7 @@ export const createUser = /* GraphQL */ `
         height
         gender
         fitnessGoal
+        workoutDays
         updatedAt
         createdAt
         owner
@@ -33,8 +34,19 @@ export const createUser = /* GraphQL */ `
         }
         nextToken
       }
+      workoutSessions {
+        items {
+          id
+          userId
+          date
+          createdAt
+          updatedAt
+          userWorkoutSessionsId
+          owner
+        }
+        nextToken
+      }
       lastUpdated
-      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -57,6 +69,7 @@ export const updateUser = /* GraphQL */ `
         height
         gender
         fitnessGoal
+        workoutDays
         updatedAt
         createdAt
         owner
@@ -73,8 +86,19 @@ export const updateUser = /* GraphQL */ `
         }
         nextToken
       }
+      workoutSessions {
+        items {
+          id
+          userId
+          date
+          createdAt
+          updatedAt
+          userWorkoutSessionsId
+          owner
+        }
+        nextToken
+      }
       lastUpdated
-      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -97,6 +121,7 @@ export const deleteUser = /* GraphQL */ `
         height
         gender
         fitnessGoal
+        workoutDays
         updatedAt
         createdAt
         owner
@@ -113,8 +138,19 @@ export const deleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      workoutSessions {
+        items {
+          id
+          userId
+          date
+          createdAt
+          updatedAt
+          userWorkoutSessionsId
+          owner
+        }
+        nextToken
+      }
       lastUpdated
-      setLastUpdated
       createdAt
       updatedAt
       owner
@@ -134,6 +170,7 @@ export const createUserProfile = /* GraphQL */ `
       height
       gender
       fitnessGoal
+      workoutDays
       updatedAt
       createdAt
       owner
@@ -153,6 +190,7 @@ export const updateUserProfile = /* GraphQL */ `
       height
       gender
       fitnessGoal
+      workoutDays
       updatedAt
       createdAt
       owner
@@ -172,6 +210,7 @@ export const deleteUserProfile = /* GraphQL */ `
       height
       gender
       fitnessGoal
+      workoutDays
       updatedAt
       createdAt
       owner
@@ -197,6 +236,7 @@ export const createWorkout = /* GraphQL */ `
           height
           gender
           fitnessGoal
+          workoutDays
           updatedAt
           createdAt
           owner
@@ -204,8 +244,10 @@ export const createWorkout = /* GraphQL */ `
         workouts {
           nextToken
         }
+        workoutSessions {
+          nextToken
+        }
         lastUpdated
-        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -253,6 +295,7 @@ export const updateWorkout = /* GraphQL */ `
           height
           gender
           fitnessGoal
+          workoutDays
           updatedAt
           createdAt
           owner
@@ -260,8 +303,10 @@ export const updateWorkout = /* GraphQL */ `
         workouts {
           nextToken
         }
+        workoutSessions {
+          nextToken
+        }
         lastUpdated
-        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -309,6 +354,7 @@ export const deleteWorkout = /* GraphQL */ `
           height
           gender
           fitnessGoal
+          workoutDays
           updatedAt
           createdAt
           owner
@@ -316,8 +362,10 @@ export const deleteWorkout = /* GraphQL */ `
         workouts {
           nextToken
         }
+        workoutSessions {
+          nextToken
+        }
         lastUpdated
-        setLastUpdated
         createdAt
         updatedAt
         owner
@@ -361,7 +409,6 @@ export const createExercise = /* GraphQL */ `
           id
           profileId
           lastUpdated
-          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -402,7 +449,6 @@ export const updateExercise = /* GraphQL */ `
           id
           profileId
           lastUpdated
-          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -443,7 +489,6 @@ export const deleteExercise = /* GraphQL */ `
           id
           profileId
           lastUpdated
-          setLastUpdated
           createdAt
           updatedAt
           owner
@@ -465,6 +510,303 @@ export const deleteExercise = /* GraphQL */ `
       createdAt
       updatedAt
       workoutExercisesId
+      owner
+    }
+  }
+`;
+export const createWorkoutSession = /* GraphQL */ `
+  mutation CreateWorkoutSession(
+    $input: CreateWorkoutSessionInput!
+    $condition: ModelWorkoutSessionConditionInput
+  ) {
+    createWorkoutSession(input: $input, condition: $condition) {
+      id
+      userId
+      user {
+        id
+        profileId
+        profile {
+          id
+          name
+          age
+          weight
+          height
+          gender
+          fitnessGoal
+          workoutDays
+          updatedAt
+          createdAt
+          owner
+        }
+        workouts {
+          nextToken
+        }
+        workoutSessions {
+          nextToken
+        }
+        lastUpdated
+        createdAt
+        updatedAt
+        owner
+      }
+      date
+      exercises {
+        items {
+          id
+          workoutSessionId
+          exerciseId
+          name
+          sets
+          reps
+          weights
+          createdAt
+          updatedAt
+          workoutSessionExercisesId
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      userWorkoutSessionsId
+      owner
+    }
+  }
+`;
+export const updateWorkoutSession = /* GraphQL */ `
+  mutation UpdateWorkoutSession(
+    $input: UpdateWorkoutSessionInput!
+    $condition: ModelWorkoutSessionConditionInput
+  ) {
+    updateWorkoutSession(input: $input, condition: $condition) {
+      id
+      userId
+      user {
+        id
+        profileId
+        profile {
+          id
+          name
+          age
+          weight
+          height
+          gender
+          fitnessGoal
+          workoutDays
+          updatedAt
+          createdAt
+          owner
+        }
+        workouts {
+          nextToken
+        }
+        workoutSessions {
+          nextToken
+        }
+        lastUpdated
+        createdAt
+        updatedAt
+        owner
+      }
+      date
+      exercises {
+        items {
+          id
+          workoutSessionId
+          exerciseId
+          name
+          sets
+          reps
+          weights
+          createdAt
+          updatedAt
+          workoutSessionExercisesId
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      userWorkoutSessionsId
+      owner
+    }
+  }
+`;
+export const deleteWorkoutSession = /* GraphQL */ `
+  mutation DeleteWorkoutSession(
+    $input: DeleteWorkoutSessionInput!
+    $condition: ModelWorkoutSessionConditionInput
+  ) {
+    deleteWorkoutSession(input: $input, condition: $condition) {
+      id
+      userId
+      user {
+        id
+        profileId
+        profile {
+          id
+          name
+          age
+          weight
+          height
+          gender
+          fitnessGoal
+          workoutDays
+          updatedAt
+          createdAt
+          owner
+        }
+        workouts {
+          nextToken
+        }
+        workoutSessions {
+          nextToken
+        }
+        lastUpdated
+        createdAt
+        updatedAt
+        owner
+      }
+      date
+      exercises {
+        items {
+          id
+          workoutSessionId
+          exerciseId
+          name
+          sets
+          reps
+          weights
+          createdAt
+          updatedAt
+          workoutSessionExercisesId
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      userWorkoutSessionsId
+      owner
+    }
+  }
+`;
+export const createSessionExercise = /* GraphQL */ `
+  mutation CreateSessionExercise(
+    $input: CreateSessionExerciseInput!
+    $condition: ModelSessionExerciseConditionInput
+  ) {
+    createSessionExercise(input: $input, condition: $condition) {
+      id
+      workoutSessionId
+      workoutSession {
+        id
+        userId
+        user {
+          id
+          profileId
+          lastUpdated
+          createdAt
+          updatedAt
+          owner
+        }
+        date
+        exercises {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        userWorkoutSessionsId
+        owner
+      }
+      exerciseId
+      name
+      sets
+      reps
+      weights
+      createdAt
+      updatedAt
+      workoutSessionExercisesId
+      owner
+    }
+  }
+`;
+export const updateSessionExercise = /* GraphQL */ `
+  mutation UpdateSessionExercise(
+    $input: UpdateSessionExerciseInput!
+    $condition: ModelSessionExerciseConditionInput
+  ) {
+    updateSessionExercise(input: $input, condition: $condition) {
+      id
+      workoutSessionId
+      workoutSession {
+        id
+        userId
+        user {
+          id
+          profileId
+          lastUpdated
+          createdAt
+          updatedAt
+          owner
+        }
+        date
+        exercises {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        userWorkoutSessionsId
+        owner
+      }
+      exerciseId
+      name
+      sets
+      reps
+      weights
+      createdAt
+      updatedAt
+      workoutSessionExercisesId
+      owner
+    }
+  }
+`;
+export const deleteSessionExercise = /* GraphQL */ `
+  mutation DeleteSessionExercise(
+    $input: DeleteSessionExerciseInput!
+    $condition: ModelSessionExerciseConditionInput
+  ) {
+    deleteSessionExercise(input: $input, condition: $condition) {
+      id
+      workoutSessionId
+      workoutSession {
+        id
+        userId
+        user {
+          id
+          profileId
+          lastUpdated
+          createdAt
+          updatedAt
+          owner
+        }
+        date
+        exercises {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        userWorkoutSessionsId
+        owner
+      }
+      exerciseId
+      name
+      sets
+      reps
+      weights
+      createdAt
+      updatedAt
+      workoutSessionExercisesId
       owner
     }
   }

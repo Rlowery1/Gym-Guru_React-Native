@@ -1,63 +1,44 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 
-const WorkoutCard = ({ workout }) => {
+const WorkoutCard = ({ exercise }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{workout.name}</Text>
-      <Text style={styles.category}>{workout.category.name}</Text>
-      {workout.image && (
-        <Image
-          source={{ uri: `https://wger.de${workout.image}` }}
-          style={styles.thumbnail}
-          resizeMode="cover"
-        />
-      )}
-      {workout.video && (
-        <Image
-          source={{ uri: `https://i.ytimg.com/vi/${workout.video}/hqdefault.jpg` }}
-          style={styles.thumbnail}
-          resizeMode="cover"
-        />
-      )}
-      <Text style={styles.description}>{workout.description}</Text>
+      <Image
+        source={require('../../assets/cover_photo_1.png')} // Replace with your own image
+        style={styles.image}
+      />
+      <View style={styles.textContainer}>
+        <Text style={styles.exerciseName}>{exercise}</Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
     borderRadius: 5,
-    marginBottom: 10,
-    elevation: 2,
+    marginVertical: 5,
   },
-  title: {
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  textContainer: {
+    marginLeft: 15,
+  },
+  exerciseName: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontWeight: '500',
   },
-  category: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#777',
-    marginBottom: 5,
-  },
-  thumbnail: {
-    width: '100%',
-    height: 200,
-    borderRadius: 5,
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    textAlign: 'left',
-    paddingHorizontal: 20,
-    marginBottom:20,
-},
 });
 
 export default WorkoutCard;
