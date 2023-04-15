@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createSessionExercise } from '../graphql/mutations';
+import { Auth } from 'aws-amplify';
+import {createExerciseLog} from '../graphql/mutations';
 
 const ExerciseCardWrapper = ({ exercise, navigation, workoutSessionId }) => {
   const [isLogging, setIsLogging] = useState(false);
@@ -54,23 +56,32 @@ const LoggedExerciseCard = ({ exercise, onStopLogging, workoutSessionId }) => {
 
   const saveLoggedExercise = async () => {
   try {
-    const setsData = sets.map((set, index) => ({
-      reps: parseInt(set, 10),
-      weight: parseInt(weights[index], 10),
-    }));
+    const setsData = sets.map((set, index) => parseInt(set, 10));
+    const weightsData = weights.map((weight) => parseFloat(weight));
+
+    const currentUser = await Auth.currentAuthenticatedUser();
+    const userId = currentUser.attributes.sub;
 
     const exerciseData = {
-      workoutSessionId: workoutSessionId,
-      exerciseId: exercise.id, // Include this field
-      name: exercise.name,
-      sets: JSON.stringify(setsData),
+      exerciseName: exercise.name,
+      date: new Date().toISOString(),
+      reps: setsData,
+      weights: weightsData,
+      userId: userId,
     };
 
-    await API.graphql(graphqlOperation(createSessionExercise, { input: exerciseData }));
+    console.log('exerciseData:', exerciseData);
+
+    await API.graphql(graphqlOperation(createExerciseLog, { input: exerciseData }));
   } catch (error) {
     console.error('Error saving logged exercise:', error);
   }
 };
+
+
+
+
+
 
 
   const updateSets = (index, value) => {

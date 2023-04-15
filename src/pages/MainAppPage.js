@@ -25,7 +25,7 @@ import { getUserProfile } from '../graphql/queries';
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 import WorkoutScreen from './WorkoutScreen';
 import WorkoutDay from '../components/WorkoutDay';
-
+import ProgressScreen from './ProgressScreen';
 
 const HomeScreen = ({ navigation }) => { // Add navigation prop here
   const [userData, setUserData] = useState(null);
@@ -93,7 +93,7 @@ const HomeScreen = ({ navigation }) => { // Add navigation prop here
 };
 
 
-const ProgressScreen = () => <Text>Progress Screen</Text>;
+
 
 
 const ProfileStack = createStackNavigator();
