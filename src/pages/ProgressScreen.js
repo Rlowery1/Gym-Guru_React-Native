@@ -1,54 +1,78 @@
-// src/pages/ProgressScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
-import { API, graphqlOperation, Auth } from 'aws-amplify';
-import { listExerciseLogs } from '../graphql/queries';
-import { LineChart, Grid, BarChart, PieChart } from 'react-native-svg-charts';
-import { Circle, G, Line, Rect, Text as SvgText } from 'react-native-svg';
+import { View, Text, StyleSheet } from 'react-native';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getUser } from '../graphql/queries';
 
 const ProgressScreen = () => {
-  const [exerciseLogs, setExerciseLogs] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch user's exercise logs
-  useEffect(() => {
-    const fetchExerciseLogs = async () => {
-      try {
-        const currentUser = await Auth.currentAuthenticatedUser();
-        const ownerId = currentUser.attributes.sub;
-        setUserId(ownerId);
-        const exerciseLogData = await API.graphql(
-          graphqlOperation(listExerciseLogs, {
-            filter: { userId: { eq: ownerId } },
-          })
-        );
-        const fetchedExerciseLogs = exerciseLogData.data.listExerciseLogs.items;
-        setExerciseLogs(fetchedExerciseLogs);
-      } catch (error) {
-        console.error('Error fetching exercise logs:', error);
+  const fetchUserProfile = async () => {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      const ownerId = currentUser.attributes.sub;
+      const userData = await API.graphql(
+        graphqlOperation(getUser, {
+          id: ownerId,
+        })
+      );
+      if (userData.data.getUser) {
+        const fetchedUserProfile = userData.data.getUser.profile;
+        setUserData(fetchedUserProfile);
+      } else {
+        console.error('Error fetching user profile: User not found');
       }
-    };
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
 
-    fetchExerciseLogs();
+  useEffect(() => {
+    fetchUserProfile();
   }, []);
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <View style={styles.container}>
+        <Text>No user data found.</Text>
+      </View>
+    );
+  }
+
   return (
-    <View>
-      <Text>Progress Screen</Text>
-      <FlatList
-        data={exerciseLogs}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.exerciseName}</Text>
-            <Text>{item.date}</Text>
-            <Text>{item.reps.toString()}</Text>
-            <Text>{item.weights.toString()}</Text>
-          </View>
-        )}
-        keyExtractor={(item) => item.id}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>Your Progress</Text>
+      <Text>Name: {userData.name}</Text>
+      <Text>Age: {userData.age}</Text>
+      <Text>Weight: {userData.weight} lbs</Text>
+      <Text>Height: {userData.height} in</Text>
+      <Text>Gender: {userData.gender}</Text>
+      <Text>Fitness Goal: {userData.fitnessGoal}</Text>
+      <Text>Workout Days: {userData.workoutDays} per week</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+});
 
 export default ProgressScreen;
