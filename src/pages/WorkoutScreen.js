@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { getWorkout } from '../data/workouts';
 import WorkoutCard from '../components/WorkoutCard';
@@ -79,8 +79,9 @@ useFocusEffect(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
   },
   header: {
     flexDirection: 'row',
@@ -91,29 +92,30 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#1E90FF',
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1E90FF',
   },
   daysContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
   },
   dayButton: {
-    backgroundColor: '#4F6D7A',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    backgroundColor: '#1E90FF',
     borderRadius: 5,
-    marginBottom: 10,
-    minWidth: '48%',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    flexGrow: 1,
     alignItems: 'center',
   },
   dayText: {
-    color: '#FFF',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: '500',
   },
 });
