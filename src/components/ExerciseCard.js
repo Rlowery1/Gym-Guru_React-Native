@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TextInput,  TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput,  TouchableOpacity, Linking } from 'react-native';
 import { API, graphqlOperation } from 'aws-amplify';
 import { Auth } from 'aws-amplify';
 import { createExerciseLog } from '../graphql/mutations';
@@ -59,30 +59,35 @@ const ExerciseCardWrapper = ({ exercise, navigation, workoutSessionId }) => {
           lastWeightInput={lastWeightInput}
           setLastSetInput={setLastSetInput}
           setLastWeightInput={setLastWeightInput}
-          // Remove the line below
-          // navigation={navigation}
         />
       ) : (
-        <ExerciseCard exercise={exercise} onStartLogging={toggleLogging} navigation={navigation} />
+        <ExerciseCard exercise={exercise} onStartLogging={toggleLogging} navigation={navigation} videoId={exercise.videoId} />
+
       )}
     </>
   );
 };
 
-const ExerciseCard = ({ exercise, onStartLogging, navigation }) => {
+const ExerciseCard = ({ exercise, onStartLogging, navigation, videoId }) => {
   const handleCardPress = () => {
     navigation.navigate('ExerciseDetails', { exercise });
   };
 
+  const openYoutubeVideo = () => {
+  console.log('videoId:', exercise.videoId); // Add this line
+  if (exercise.videoId) {
+    Linking.openURL(`https://www.youtube.com/watch?v=${exercise.videoId}`);
+  }
+};
   return (
-    <TouchableOpacity activeOpacity={1}>
-      <LinearGradient
-        colors={['#1E90FF', '#1E90FF']}
-        start={[0, 0]}
-        end={[1, 0]}
-        style={styles.card}
-      >
-        <View style={styles.cardContent}>
+  <TouchableOpacity activeOpacity={1}>
+    <LinearGradient
+      colors={['#1E90FF', '#1E90FF']}
+      start={[0, 0]}
+      end={[1, 0]}
+      style={styles.card}
+    >
+      <View style={styles.cardContent}>
           <Text style={styles.name}>{exercise.name}</Text>
           <Text style={styles.info}>
             Equipment: {exercise.equipment}{'\n'}
@@ -92,7 +97,12 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation }) => {
             Reps: {exercise.reps.join('/')}
           </Text>
           <Image style={styles.gif} source={{ uri: exercise.gifUrl }} />
-        </View>
+        {exercise.videoId && (
+          <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
+            <Text style={styles.videoLinkText}>Watch on YouTube</Text>
+          </TouchableOpacity>
+        )}
+      </View>
         <TouchableOpacity onPress={onStartLogging} style={styles.logButton} activeOpacity={0.8}>
           <Text style={styles.logButtonText}>Log Exercise</Text>
         </TouchableOpacity>
@@ -101,6 +111,7 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation }) => {
   );
 };
 
+
 const LoggedExerciseCard = ({
   exercise,
   onStopLogging,
@@ -108,6 +119,7 @@ const LoggedExerciseCard = ({
   lastWeightInput,
   setLastSetInput,
   setLastWeightInput,
+  videoId,
 }) => {
   const [sets, setSets] = useState(Array(exercise.sets).fill(''));
   const [weights, setWeights] = useState(Array(exercise.sets).fill(''));
@@ -164,8 +176,13 @@ const LoggedExerciseCard = ({
   return (
     <>
       <Text style={styles.name}>{exercise.name}</Text>
+      {exercise.videoId && (
+        <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
+          <Text style={styles.videoLinkText}>Watch on YouTube</Text>
+        </TouchableOpacity>
+      )}
       {sets.map((_, index) => (
-        <View key={index} style={styles.inputRow}>
+          <View key={`${exercise.name}-${index}`} style={styles.inputRow}>
           <Text style={styles.setInputLabel}>Set {index + 1}</Text>
           <TextInput
             style={styles.setInput}

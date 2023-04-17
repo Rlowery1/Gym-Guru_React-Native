@@ -8,7 +8,6 @@ import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 
 
-
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

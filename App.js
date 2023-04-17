@@ -6,6 +6,9 @@ import awsconfig from './src/aws-exports';
 import AppNavigator from './src/navigation/AppNavigator';
 import config from './src/aws-exports';
 
+
+
+
 Amplify.configure(awsconfig);
 function App() {
   return (

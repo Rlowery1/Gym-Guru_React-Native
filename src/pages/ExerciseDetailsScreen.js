@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import LoggedExerciseCard from '../components/WorkoutDay';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createSessionExercise } from '../graphql/mutations';
-import { google } from 'googleapis';
 import { LinearGradient } from 'expo-linear-gradient';
 
+const API_KEY = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
 
-const AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4 = 'AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4';
 const ExerciseDetailsScreen = ({ route, navigation }) => {
   const { exercise, workoutSessionId } = route.params;
   const [videoId, setVideoId] = useState(null);
@@ -15,20 +14,15 @@ const ExerciseDetailsScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchYoutubeVideo = async () => {
       try {
-        const youtube = google.youtube({
-          version: 'v3',
-          auth: AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4,
-        });
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(
+            exercise.name
+          )}&type=video&key=${API_KEY}`
+        );
 
-        const response = await youtube.search.list({
-          part: 'snippet',
-          type: 'video',
-          q: exercise.name,
-          maxResults: 1,
-        });
-
-        if (response.data.items && response.data.items.length > 0) {
-          setVideoId(response.data.items[0].id.videoId);
+        const data = await response.json();
+        if (data.items && data.items.length > 0) {
+          setVideoId(data.items[0].id.videoId);
         }
       } catch (error) {
         console.error('Error fetching YouTube video:', error);
@@ -39,10 +33,10 @@ const ExerciseDetailsScreen = ({ route, navigation }) => {
   }, [exercise]);
 
   const openYoutubeVideo = () => {
-    if (videoId) {
-      Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`);
-    }
-  };
+  if (videoId) {
+    Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`);
+  }
+};
 
 
   const onStopLogging = async (workoutSessionId, exerciseId, sets, weights) => {
@@ -74,7 +68,7 @@ const ExerciseDetailsScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
       <LoggedExerciseCard
-        exercise={exercise}
+        exercise={{ ...exercise, videoId }} // Pass videoId along with exercise
         onStopLogging={onStopLogging}
         workoutSessionId={workoutSessionId}
       />
@@ -83,7 +77,7 @@ const ExerciseDetailsScreen = ({ route, navigation }) => {
 };
 
 
-const styles = StyleSheet.create({
+const styles   = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
