@@ -103,35 +103,40 @@ const ProfileEditScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={GlobalStyles.title}>Edit Profile</Text>
+      <Text style={[GlobalStyles.title, { color: '#FFFFFF' }]}>Edit Profile</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <TextInput
-          style={styles.input}
-          value={name}
-          onChangeText={setName}
-          placeholder="Name"
-        />
-        <TextInput
-          style={styles.input}
-          value={age}
-          onChangeText={setAge}
-          placeholder="Age"
-          keyboardType="number-pad"
-        />
-        <TextInput
-          style={styles.input}
-value={weight}
-onChangeText={setWeight}
-placeholder="Weight (kg)"
-keyboardType="number-pad"
+  style={styles.input}
+  value={name}
+  onChangeText={setName}
+  placeholder="Name"
+  placeholderTextColor="#FFFFFF"
 />
 <TextInput
-       style={styles.input}
-       value={height}
-       onChangeText={setHeight}
-       placeholder="Height (cm)"
-       keyboardType="number-pad"
-     />
+  style={styles.input}
+  value={age}
+  onChangeText={setAge}
+  placeholder="Age"
+  keyboardType="number-pad"
+  placeholderTextColor="#FFFFFF"
+/>
+<TextInput
+  style={styles.input}
+  value={weight}
+  onChangeText={setWeight}
+  placeholder="Weight (kg)"
+  keyboardType="number-pad"
+  placeholderTextColor="#FFFFFF"
+/>
+<TextInput
+  style={styles.input}
+  value={height}
+  onChangeText={setHeight}
+  placeholder="Height (cm)"
+  keyboardType="number-pad"
+  placeholderTextColor="#FFFFFF"
+/>
+
 <View style={styles.inputContainer}>
 <RNPickerSelect
 onValueChange={(value) => setGender(value)}
@@ -174,7 +179,7 @@ style={pickerSelectStyles}
 />
 </View>
     <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-      <Text style={GlobalStyles.title}>Save</Text>
+        <Text style={[GlobalStyles.title, { color: '#FFFFFF' }]}>Save</Text>
     </TouchableOpacity>
   </ScrollView>
 </View>
@@ -182,65 +187,69 @@ style={pickerSelectStyles}
 };
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: '#fff',
-paddingTop: 20,
-},
-scrollViewContainer: {
-alignItems: 'center',
-},
-input: {
-width: '80%',
-height: 40,
-borderColor: '#ccc',
-borderWidth: 1,
-borderRadius: 5,
-paddingHorizontal: 10,
-marginBottom: 10,
-backgroundColor: 'white',
-fontSize: 16,
-},
-button: {
-backgroundColor: '#4CAF50',
-paddingHorizontal: 20,
-paddingVertical: 10,
-borderRadius: 5,
-marginTop: 10,
-},
-inputContainer: {
-width: '80%',
-marginBottom: 10,
-},
+  container: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+    paddingTop: 20,
+  },
+  scrollViewContainer: {
+    alignItems: 'center',
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#1A1A1D',
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+  button: {
+    backgroundColor: '#0E7C7B',
+    paddingHorizontal: 40,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginTop: 15,
+    width: '50%',
+  },
+  inputContainer: {
+    width: '80%',
+    marginBottom: 10,
+  },
 });
 
 const pickerSelectStyles = StyleSheet.create({
-inputIOS: {
-fontSize: 16,
-paddingHorizontal: 10,
-paddingVertical: 5,
-borderWidth: 1,
-borderColor: '#ccc',
-borderRadius: 5,
-color: 'black',
-paddingRight: 30,
-width: '100%',
-height: 40,
-marginBottom: 10,
-},
-inputAndroid: {
-fontSize: 16,
-paddingHorizontal: 10,
-paddingVertical: 5,
-borderWidth: 1,
-borderColor: '#ccc',
-borderRadius: 5,
-color: 'black',
-paddingRight: 30,
-width: '100%',
-height: 40,
-marginBottom: 10,
-},
+  inputIOS: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    color: 'white',
+    paddingRight: 30,
+    width: '100%',
+    height: 40,
+    marginBottom: 10,
+    backgroundColor: '#1A1A1D',
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    color: 'white',
+    paddingRight: 30,
+    width: '100%',
+    height: 40,
+    marginBottom: 10,
+    backgroundColor: '#1A1A1D',
+  },
 });
 
 export default ProfileEditScreen;

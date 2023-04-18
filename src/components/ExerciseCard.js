@@ -74,20 +74,20 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation, videoId }) => {
   };
 
   const openYoutubeVideo = () => {
-  console.log('videoId:', exercise.videoId); // Add this line
-  if (exercise.videoId) {
-    Linking.openURL(`https://www.youtube.com/watch?v=${exercise.videoId}`);
-  }
-};
+    if (exercise.videoId) {
+      Linking.openURL(`https://www.youtube.com/watch?v=${exercise.videoId}`);
+    }
+  };
   return (
-  <TouchableOpacity activeOpacity={1}>
-    <LinearGradient
-      colors={['#1E90FF', '#1E90FF']}
-      start={[0, 0]}
-      end={[1, 0]}
-      style={styles.card}
-    >
-      <View style={styles.cardContent}>
+    <TouchableOpacity activeOpacity={1} onPress={handleCardPress}>
+      <LinearGradient
+        colors={['#303030', '#303030']} // Change the background color
+        start={[0, 0]}
+        end={[1, 0]}
+        style={styles.card}
+      >
+        <Image style={styles.gif} source={{ uri: exercise.gifUrl }} />
+        <View style={styles.cardContent}>
           <Text style={styles.name}>{exercise.name}</Text>
           <Text style={styles.info}>
             Equipment: {exercise.equipment}{'\n'}
@@ -96,20 +96,20 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation, videoId }) => {
             Sets: {exercise.sets}{'\n'}
             Reps: {exercise.reps.join('/')}
           </Text>
-          <Image style={styles.gif} source={{ uri: exercise.gifUrl }} />
-        {exercise.videoId && (
-          <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
-            <Text style={styles.videoLinkText}>Watch on YouTube</Text>
+          {exercise.videoId && (
+            <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
+              <Text style={styles.videoLinkText}>Watch on YouTube</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={onStartLogging} style={styles.logButton} activeOpacity={0.8}>
+            <Text style={styles.logButtonText}>Log Exercise</Text>
           </TouchableOpacity>
-        )}
-      </View>
-        <TouchableOpacity onPress={onStartLogging} style={styles.logButton} activeOpacity={0.8}>
-          <Text style={styles.logButtonText}>Log Exercise</Text>
-        </TouchableOpacity>
+        </View>
       </LinearGradient>
     </TouchableOpacity>
   );
 };
+
 
 
 const LoggedExerciseCard = ({
@@ -216,14 +216,20 @@ const LoggedExerciseCard = ({
 const styles = StyleSheet.create({
   card: {
     borderRadius: 10,
-    padding: 20,
     marginBottom: 20,
-    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   cardContent: {
-    flex: 1,
+    backgroundColor: '#303030',
+    borderRadius: 10,
+    padding: 20,
+    marginTop: -25,
+    width: '100%',
   },
   name: {
     fontSize: 18,
@@ -237,48 +243,35 @@ const styles = StyleSheet.create({
   },
   gif: {
     width: '100%',
-    height: 100,
+    height: 250, // Change height to make the urlGIFs look larger
     resizeMode: 'cover',
-    borderRadius: 5,
-    marginTop: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   logButton: {
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     paddingVertical: 8,
     paddingHorizontal: 20,
-    marginLeft: 15,
+    marginTop: 15,
   },
   logButtonText: {
     color: '#1E90FF',
     fontSize: 16,
     fontWeight: '500',
   },
-inputRow: {
-flexDirection: 'row',
-alignItems: 'center',
-justifyContent: 'space-between',
-marginTop: 10,
-},
-setInputLabel: {
-fontSize: 16,
-fontWeight: '500',
-},
-setInput: {
-backgroundColor: '#F0F0F0',
-borderRadius: 5,
-paddingVertical: 5,
-paddingHorizontal: 10,
-width: '35%',
-textAlign: 'center',
-},
-stopLoggingButton: {
-backgroundColor: '#FF6347',
-borderRadius: 5,
-paddingVertical: 8,
-paddingHorizontal: 20,
-marginTop: 20,
-},
+  videoLink: {
+    backgroundColor: '#FF0000',
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  videoLinkText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '500',
+  },
 });
 
 export default ExerciseCardWrapper;

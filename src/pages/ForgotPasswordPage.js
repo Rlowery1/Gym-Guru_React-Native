@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   timerText: {
-    color: '#E6E6E6',
+    color: '#ffffff',
     marginTop: 10,
     textAlign: 'center',
   },

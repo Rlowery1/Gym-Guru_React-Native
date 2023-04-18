@@ -171,7 +171,13 @@ const MainAppPage = () => {
   const Tab = createBottomTabNavigator();
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#0E7C7B',
+        tabBarInactiveTintColor: '#E6E6E6',
+        tabBarStyle: { backgroundColor: '#1A1A1D' },
+      }}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
       <Tab.Screen name="Progress" component={ProgressScreen} />
@@ -180,10 +186,11 @@ const MainAppPage = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#1A1A1D',
   },
   logoContainer: {
     alignItems: 'center',
@@ -195,7 +202,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#2A2A2D',
     borderRadius: 10,
     marginHorizontal: 20,
     marginTop: 20,
@@ -216,10 +223,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: '#E6E6E6',
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
+    color: '#E6E6E6',
   },
   progressContainer: {
     alignItems: 'center',
@@ -227,14 +236,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileButton: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#0E7C7B',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 205,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   profileButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: '#E6E6E6',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

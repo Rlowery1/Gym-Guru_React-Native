@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const API_KEY = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
 
-const ExerciseDetailsScreen = ({ route, navigation }) => {
+const   ExerciseDetailsScreen = ({ route, navigation }) => {
   const { exercise, workoutSessionId } = route.params;
   const [videoId, setVideoId] = useState(null);
 
@@ -80,7 +80,7 @@ const ExerciseDetailsScreen = ({ route, navigation }) => {
 const styles   = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1A1A1D',
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
@@ -88,6 +88,7 @@ const styles   = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+
   },
   videoLink: {
     backgroundColor: '#FF0000',

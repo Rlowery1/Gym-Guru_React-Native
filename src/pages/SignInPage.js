@@ -40,7 +40,6 @@ const SignInPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>GymGuru</Text>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomInput
         onChangeText={setEmail}
         value={email}
@@ -55,9 +54,9 @@ const SignInPage = ({ navigation }) => {
         secureTextEntry
         textContentType="password"
       />
-      <CustomButton title="Sign In" onPress={signIn} />
+      <CustomButton title="Sign In" onPress={signIn} backgroundColor="#0E7C7B" />
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        <Text style={styles.textWhite}>Forgot Password?</Text>
       </TouchableOpacity>
     </View>
   );
@@ -89,6 +88,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textDecorationLine: 'underline',
     fontSize: 16,
+  },
+  textWhite: {
+    color: '#ffffff',
   },
 });
 

@@ -5,6 +5,9 @@ import { Auth } from 'aws-amplify';
 import { Alert } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
 import CustomInput from '../components/CustomInput';
+
+
+
 const SignUpPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -79,8 +82,8 @@ const SignUpPage = ({ navigation }) => {
     <View style={styles.container}>
       {!confirmation ? (
         <>
-          <Text style={CommonStyles.title}>Sign Up for GymGuru</Text>
-          {error ? <Text style={CommonStyles.title}>{error}</Text> : null}
+          <Text style={styles.title}>Sign Up for GymGuru</Text>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
           <CustomInput
           onChangeText={(text) => {
             setEmail(text);
@@ -112,13 +115,13 @@ const SignUpPage = ({ navigation }) => {
           textContentType="password"
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.showPassword}>
-            <Text>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
+            <Text style={styles.textWhite}>{showPassword ? 'Hide Password' : 'Show Password'}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={signUp}>
-            <Text style={CommonStyles.title}>Sign Up</Text>
+            <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-            <Text style={CommonStyles.title}>Already have an account? Sign In</Text>
+            <Text style={styles.textWhite}>Already have an account? Sign In</Text>
           </TouchableOpacity>
         </>
       ) : (
@@ -145,7 +148,7 @@ const SignUpPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1A1A1D',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -153,9 +156,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#ffffff',
+  },
+  textWhite: {
+    color: '#ffffff',
   },
   error: {
-    color: 'red',
+    color: '#E63946',
     marginBottom: 10,
   },
   input: {
@@ -165,22 +172,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 5,
     width: '80%',
+    backgroundColor: '#2C2A33',
+    color: '#E6E6E6',
   },
   showPassword: {
     marginBottom: 10,
+    color: '#E6E6E6',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0E7C7B',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 25,
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 18,
   },
   signInText: {
     marginTop: 10,
-    color: 'blue',
+    color: '#E6E6E6',
+    textDecorationLine: 'underline',
   },
 });
 

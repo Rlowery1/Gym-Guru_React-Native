@@ -100,96 +100,97 @@ const WorkoutScreen = ({ onDaysChange }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchBar}>
-        <Ionicons name="search" size={24} color="black" />
-<TextInput
-       style={styles.searchInput}
-       onChangeText={setSearchInput}
-       value={searchInput}
-       placeholder="Search for exercises on YouTube"
-     />
-</View>
-{searchInput.length > 0 ? (
-<FlatList
-data={searchResults}
-renderItem={renderItem}
-keyExtractor={(item) => item.id}
-contentContainerStyle={styles.resultsContainer}
-/>
-) : (
-<View style={styles.header}>
-<TouchableOpacity onPress={() => handleWeekChange(-1)}>
-<Text style={styles.buttonText}>{'<'}</Text>
-</TouchableOpacity>
-<Text style={styles.headerText}>
-Week {week} - {daysPerWeek} Days
-</Text>
-<TouchableOpacity onPress={() => handleWeekChange(1)}>
-<Text style={styles.buttonText}>{'>'}</Text>
-</TouchableOpacity>
-</View>
-)}
-<View style={styles.daysContainer}>
-{Array.from({ length: daysPerWeek }, (_, i) => (
-<TouchableOpacity
-key={i}
-style={styles.dayButton}
-onPress={() => handleDayPress(i + 1)}
->
-<Text style={styles.dayText}>Day {i + 1}</Text>
-</TouchableOpacity>
-))}
-</View>
-<WorkoutDaysSelector daysPerWeek={daysPerWeek} />
-</SafeAreaView>
-);
+        <Ionicons name="search" size={24} color="white" />
+        <TextInput
+          style={styles.searchInput}
+          onChangeText={setSearchInput}
+          value={searchInput}
+          placeholder="Search for exercises on YouTube"
+          placeholderTextColor="#FFFFFF"
+        />
+      </View>
+      {searchInput.length > 0 ? (
+        <FlatList
+          data={searchResults}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.resultsContainer}
+        />
+      ) : (
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => handleWeekChange(-1)}>
+            <Text style={styles.buttonText}>{'<'}</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>
+            Week {week} - {daysPerWeek} Days
+          </Text>
+          <TouchableOpacity onPress={() => handleWeekChange(1)}>
+            <Text style={styles.buttonText}>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      <View style={styles.daysContainer}>
+        {Array.from({ length: daysPerWeek }, (_, i) => (
+          <TouchableOpacity
+            key={i}
+            style={styles.dayButton}
+            onPress={() => handleDayPress(i + 1)}
+          >
+            <Text style={styles.dayText}>Day {i + 1}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <WorkoutDaysSelector daysPerWeek={daysPerWeek} />
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: '#fff',
-justifyContent: 'center',
-paddingHorizontal: 20,
-},
-header: {
-flexDirection: 'row',
-alignItems: 'center',
-justifyContent: 'space-between',
-marginBottom: 20,
-},
-buttonText: {
-fontSize: 24,
-fontWeight: 'bold',
-color: '#1E90FF',
-},
-headerText: {
-fontSize: 18,
-fontWeight: '600',
-color: '#1E90FF',
-},
-daysContainer: {
-flexDirection: 'row',
-flexWrap: 'wrap',
-justifyContent: 'space-between',
-},
-dayButton: {
-backgroundColor: '#1E90FF',
-borderRadius: 5,
-paddingVertical: 10,
-paddingHorizontal: 20,
-marginBottom: 20,
-flexGrow: 1,
-alignItems: 'center',
-},
-dayText: {
-color: '#FFFFFF',
-fontSize: 16,
+  container: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0E7C7B',
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  dayButton: {
+    backgroundColor: '#0E7C7B',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    flexGrow: 1,
+    alignItems: 'center',
+  },
+  dayText: {
+    color: '#FFFFFF',
+    fontSize: 16,
 fontWeight: '500',
 },
 searchBar: {
 flexDirection: 'row',
 alignItems: 'center',
-backgroundColor: '#f0f0f0',
+backgroundColor: '#0E7C7B',
 paddingHorizontal: 10,
 borderRadius: 5,
 marginBottom: 20,
@@ -197,6 +198,7 @@ marginBottom: 20,
 searchInput: {
 flex: 1,
 marginLeft: 10,
+color: '#FFFFFF',
 },
 resultsContainer: {
 paddingBottom: 20,

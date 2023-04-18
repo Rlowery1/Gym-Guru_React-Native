@@ -74,79 +74,60 @@ const ProfileScreen = ({ navigation }) => {
         source={{ uri: 'https://via.placeholder.com/150' }}
         style={styles.profileImage}
       />
-      <Text style={GlobalStyles.age}>{userData.name}</Text>
-      <Text style={GlobalStyles.age}>Age: {userData.age}</Text>
-      <Text style={GlobalStyles.age}>Weight: {userData.weight} kg</Text>
-      <Text style={GlobalStyles.age}>Height: {userData.height} cm</Text>
-      <Text style={GlobalStyles.age}>Gender: {userData.gender}</Text>
-      <Text style={GlobalStyles.age}>Workout Days: {userData.workoutDays}</Text>
-      <Text style={GlobalStyles.age}>Fitness Goal: {userData.fitnessGoal}</Text>
-      <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-        <Text style={styles.editText}>Edit Profile</Text>
+      <Text style={styles.name}>{userData.name}</Text>
+      <Text style={styles.age}>Age: {userData.age}</Text>
+      <Text style={styles.age}>Weight: {userData.weight} kg</Text>
+      <Text style={styles.age}>Height: {userData.height} cm</Text>
+      <Text style={styles.age}>Gender: {userData.gender}</Text>
+      <Text style={styles.age}>Workout Days: {userData.workoutDays}</Text>
+      <Text style={styles.age}>Fitness Goal: {userData.fitnessGoal}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
+        <Text style={styles.buttonText}>Edit Profile</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  profileContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 20,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  age: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  weight: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  height: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  gender: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  fitnessGoal: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
- createButton: {
-  backgroundColor: '#4CAF50',
-  paddingHorizontal: 20,
-  paddingVertical: 10,
-  borderRadius: 5,
-  marginTop: 20,
-},
-createText: {
-  color: 'white',
-  fontSize: 18,
-},
-  editButton: {
-  backgroundColor: '#4CAF50',
-  paddingHorizontal: 20,
-  paddingVertical: 10,
-  borderRadius: 5,
-  },
-  editText: {
-  color: 'white',
-  fontSize: 18,
-  },
-});
+    profileContainer: {
+      flex: 1,
+      backgroundColor: '#1A1A1D',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    profileImage: {
+      width: 150,
+      height: 150,
+      borderRadius: 75,
+      marginBottom: 20,
+    },
+    name: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#E6E6E6',
+      marginBottom: 10,
+    },
+    age: {
+      fontSize: 18,
+      color: '#E6E6E6',
+      marginBottom: 10,
+    },
+    button: {
+      backgroundColor: '#0E7C7B',
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 6,
+      marginTop: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    buttonText: {
+      color: '#E6E6E6',
+      fontSize: 18,
+    },
+  });
 
 export default ProfileScreen;

@@ -3,6 +3,15 @@ import RNPickerSelect from 'react-native-picker-select';
 import { View, Text, StyleSheet } from 'react-native';
 
 const WorkoutDaysSelector = ({ daysPerWeek }) => {
+  const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      color: 'white',
+    },
+    inputAndroid: {
+      color: 'white',
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Workout Days: </Text>
@@ -17,7 +26,7 @@ const WorkoutDaysSelector = ({ daysPerWeek }) => {
           { label: '7 Days', value: '7' },
         ]}
         value={daysPerWeek.toString()}
-        style={{ height: 50, width: 150 }}
+        style={pickerSelectStyles}
       />
     </View>
   );
@@ -32,6 +41,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     fontWeight: '500',
+    color: '#ffffff',
   },
 });
 
