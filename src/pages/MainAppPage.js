@@ -29,6 +29,9 @@ import { StyleSheet } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
 import yourLogo from '../../assets/gainguru-high-resolution-logo-black-on-transparent-background.png';
 
+
+
+
 const HomeScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState('');

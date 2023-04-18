@@ -47,7 +47,12 @@ const WorkoutScreen = ({ onDaysChange }) => {
       console.error(error);
     }
   };
-   const renderItem = ({ item }) => {
+
+  const renderItem = ({ item, index }) => {
+  if (index >= 3) {
+    return null;
+  }
+
   return (
     <TouchableOpacity
       style={styles.resultCard}
@@ -96,97 +101,133 @@ const WorkoutScreen = ({ onDaysChange }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.searchBar}>
         <Ionicons name="search" size={24} color="black" />
-        <TextInput
-          style={styles.searchInput}
-          onChangeText={setSearchInput}
-          value={searchInput}
-          placeholder="Search for exercises on YouTube"
-        />
-      </View>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => handleWeekChange(-1)}>
-            <Text style={styles.buttonText}>{'<'}</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>
-            Week {week} - {daysPerWeek} Days
-          </Text>
-          <TouchableOpacity onPress={() => handleWeekChange(1)}>
-            <Text style={styles.buttonText}>{'>'}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.daysContainer}>
-          {Array.from({ length: daysPerWeek }, (_, i) => (
-            <TouchableOpacity
-              key={i}
-              style={styles.dayButton}
-              onPress={() => handleDayPress(i + 1)}
-            >
-              <Text style={styles.dayText}>Day {i + 1}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <WorkoutDaysSelector daysPerWeek={daysPerWeek} />
-      </View>
-    </SafeAreaView>
-  );
+<TextInput
+       style={styles.searchInput}
+       onChangeText={setSearchInput}
+       value={searchInput}
+       placeholder="Search for exercises on YouTube"
+     />
+</View>
+{searchInput.length > 0 ? (
+<FlatList
+data={searchResults}
+renderItem={renderItem}
+keyExtractor={(item) => item.id}
+contentContainerStyle={styles.resultsContainer}
+/>
+) : (
+<View style={styles.header}>
+<TouchableOpacity onPress={() => handleWeekChange(-1)}>
+<Text style={styles.buttonText}>{'<'}</Text>
+</TouchableOpacity>
+<Text style={styles.headerText}>
+Week {week} - {daysPerWeek} Days
+</Text>
+<TouchableOpacity onPress={() => handleWeekChange(1)}>
+<Text style={styles.buttonText}>{'>'}</Text>
+</TouchableOpacity>
+</View>
+)}
+<View style={styles.daysContainer}>
+{Array.from({ length: daysPerWeek }, (_, i) => (
+<TouchableOpacity
+key={i}
+style={styles.dayButton}
+onPress={() => handleDayPress(i + 1)}
+>
+<Text style={styles.dayText}>Day {i + 1}</Text>
+</TouchableOpacity>
+))}
+</View>
+<WorkoutDaysSelector daysPerWeek={daysPerWeek} />
+</SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-    header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  buttonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1E90FF',
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1E90FF',
-  },
-  daysContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  dayButton: {
-    backgroundColor: '#1E90FF',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    flexGrow: 1,
-    alignItems: 'center',
-  },
-  dayText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 10,
-  },
+container: {
+flex: 1,
+backgroundColor: '#fff',
+justifyContent: 'center',
+paddingHorizontal: 20,
+},
+header: {
+flexDirection: 'row',
+alignItems: 'center',
+justifyContent: 'space-between',
+marginBottom: 20,
+},
+buttonText: {
+fontSize: 24,
+fontWeight: 'bold',
+color: '#1E90FF',
+},
+headerText: {
+fontSize: 18,
+fontWeight: '600',
+color: '#1E90FF',
+},
+daysContainer: {
+flexDirection: 'row',
+flexWrap: 'wrap',
+justifyContent: 'space-between',
+},
+dayButton: {
+backgroundColor: '#1E90FF',
+borderRadius: 5,
+paddingVertical: 10,
+paddingHorizontal: 20,
+marginBottom: 20,
+flexGrow: 1,
+alignItems: 'center',
+},
+dayText: {
+color: '#FFFFFF',
+fontSize: 16,
+fontWeight: '500',
+},
+searchBar: {
+flexDirection: 'row',
+alignItems: 'center',
+backgroundColor: '#f0f0f0',
+paddingHorizontal: 10,
+borderRadius: 5,
+marginBottom: 20,
+},
+searchInput: {
+flex: 1,
+marginLeft: 10,
+},
+resultsContainer: {
+paddingBottom: 20,
+},
+resultCard: {
+flexDirection: 'row',
+alignItems: 'center',
+backgroundColor: '#f0f0f0',
+borderRadius: 5,
+padding: 10,
+marginBottom: 10,
+},
+resultImage: {
+width: 90,
+height: 60,
+borderRadius: 5,
+},
+resultTextContainer: {
+flex: 1,
+marginLeft: 10,
+},
+resultTitle: {
+fontSize: 16,
+fontWeight: '600',
+marginBottom: 5,
+},
+resultChannel: {
+fontSize: 14,
+fontWeight: '400',
+color: '#777',
+},
 });
 
 export default WorkoutScreen;
-

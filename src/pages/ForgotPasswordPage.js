@@ -1,10 +1,8 @@
-// src/pages/ForgotPasswordPage.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Auth } from 'aws-amplify';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
-import CommonStyles from '../styles/GlobalStyles';
 
 const ForgotPasswordPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -41,7 +39,7 @@ const ForgotPasswordPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={CommonStyles.title}>Forgot Password</Text>
+      <Text style={styles.title}>Forgot Password</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomInput
         onChangeText={setEmail}
@@ -51,7 +49,7 @@ const ForgotPasswordPage = ({ navigation }) => {
         textContentType="emailAddress"
       />
       <CustomButton title="Request Password Reset" onPress={requestPasswordReset} disabled={disableResetButton} />
-      <Text style={CommonStyles.title}>{disableResetButton ? 'Please wait 60 seconds before requesting another password reset' : ''}</Text>
+      <Text style={styles.timerText}>{disableResetButton ? 'Please wait 60 seconds before requesting another password reset' : ''}</Text>
     </View>
   );
 };
@@ -59,25 +57,26 @@ const ForgotPasswordPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#1A1A1D',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#0d2c4f',
+    color: '#E6E6E6',
   },
-  error: {
-    color: 'red',
+    error: {
+    color: '#E63946',
     marginBottom: 10,
   },
   timerText: {
-    color: '#0d2c4f',
+    color: '#E6E6E6',
     marginTop: 10,
     textAlign: 'center',
   },
 });
 
 export default ForgotPasswordPage;
+

@@ -1,21 +1,35 @@
-// src/components/CustomInput.js
 import React from 'react';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
-const CustomInput = (props) => {
-  return <TextInput style={styles.input} {...props} />;
+const CustomInput = ({ onChangeText, value, ...props }) => {
+  return (
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeText}
+        value={value}
+        placeholderTextColor="#FFFFFF"
+        {...props}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    width: '100%',
+    marginBottom: 16,
+  },
   input: {
+    width: '100%',
     height: 40,
-    borderColor: 'gray',
+    paddingHorizontal: 8,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 5,
-    width: '80%',
+    borderColor: '#E6E6E6',
+    borderRadius: 5,
+    backgroundColor: '#1A1A1D',
+    color: '#FFFFFF',
   },
 });
 
 export default CustomInput;
-

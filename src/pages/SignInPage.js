@@ -1,4 +1,3 @@
-// src/pages/SignInPage.js
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -10,7 +9,6 @@ import { Auth } from 'aws-amplify';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
 import { validateEmail, validatePassword } from '../utils/validate';
-import CommonStyles from '../styles/GlobalStyles';
 
 const SignInPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -41,8 +39,8 @@ const SignInPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={CommonStyles.title}>GymGuru</Text>
-      {error ? <Text style={CommonStyles.title}>{error}</Text> : null}
+      <Text style={styles.title}>GymGuru</Text>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomInput
         onChangeText={setEmail}
         value={email}
@@ -59,7 +57,7 @@ const SignInPage = ({ navigation }) => {
       />
       <CustomButton title="Sign In" onPress={signIn} />
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-        <Text style={CommonStyles.title}>Forgot Password?</Text>
+        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
     </View>
   );
@@ -68,24 +66,29 @@ const SignInPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1D',
+    paddingHorizontal: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#0d2c4f',
+    marginBottom: 30,
+    textAlign: 'center',
+    color: '#E6E6E6',
+    fontFamily: 'Arial',
   },
   error: {
-    color: 'red',
+    color: '#E6E6E6',
     marginBottom: 10,
+    fontSize: 14,
   },
   forgotPasswordText: {
-    color: '#0d2c4f',
+    color: '#E6E6E6',
     marginTop: 10,
     textDecorationLine: 'underline',
+    fontSize: 16,
   },
 });
 
