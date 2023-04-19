@@ -9,6 +9,7 @@ import ResetPasswordPage from '../pages/ResetPasswordPage';
 import MainAppPage from '../pages/MainAppPage';
 import ExerciseDetailsScreen from '../pages/ExerciseDetailsScreen';
 import WebViewScreen from '../pages/WebViewScreen';
+import YoutubeVideoScreen from '../pages/WebViewScreen';
 
 const Stack = createStackNavigator();
 
@@ -54,6 +55,10 @@ const AppNavigator = () => {
         name="WebView"
         component={WebViewScreen}
         options={{ headerTitle: 'WebView' }}
+      />
+      <Stack.Screen
+          name="YoutubeVideo"
+          component={YoutubeVideoScreen}
       />
     </Stack.Navigator>
   );

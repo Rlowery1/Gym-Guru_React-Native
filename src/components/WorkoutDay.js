@@ -4,12 +4,15 @@ import {
   Text,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import ExerciseCardWrapper from './ExerciseCard';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getUserProfile } from '../graphql/queries';
 import { Auth } from 'aws-amplify';
 import { getExercisesByBodyPart, getExercisesByTarget, getExercisesByEquipment } from "./exerciseAPI";
+import axios from 'axios';
 
 const fetchUserProfile = async () => {
   try {
@@ -29,6 +32,51 @@ const fetchUserProfile = async () => {
 const WorkoutDay = ({ route }) => {
   const { week, day, days: daysPerWeek, workoutSessionId } = route.params;
   const [exercises, setExercises] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const rapidApiKey = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
+
+  const swapExercise = async (exerciseId) => {
+  setLoading(true);
+
+
+  try {
+    const currentExercise = exercises.find((exercise) => exercise.id === exerciseId);
+    const target = currentExercise.target.replace(' ', '%20');
+    const bodyPart = currentExercise.bodyPart;
+
+    const targetExercises = await axios.get(`https://justin-WFnsXH_t6.p.rapidapi.com/exercises/target/${target}`, {
+      headers: {
+        'X-RapidAPI-Host': 'justin-WFnsXH_t6.p.rapidapi.com',
+        'X-RapidAPI-Key': rapidApiKey
+      }
+    });
+
+    const filteredExercises = targetExercises.data.filter((exercise) => {
+      return (
+        exercise.bodyPart === bodyPart &&
+        (exercise.equipment === 'barbell' || exercise.equipment === 'dumbbell')
+      );
+    });
+
+    const randomIndex = Math.floor(Math.random() * filteredExercises.length);
+    const newExercise = filteredExercises[randomIndex];
+
+    setExercises((prevExercises) => {
+      return prevExercises.map((exercise) => {
+        if (exercise.id === exerciseId) {
+          return newExercise;
+        }
+        return exercise;
+      });
+    });
+  } catch (error) {
+    console.error('Error swapping exercise:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const fetchExercises = async (day, workoutDays) => {
     try {
@@ -39,15 +87,15 @@ const WorkoutDay = ({ route }) => {
 
       // Adjust exercises based on the fitness goal
       switch (fitnessGoal) {
-    case 'Gain':
-      dayExercises = await getExercisesForGain(day, workoutDays);
-      break;
-    case 'Cut':
-      dayExercises = await getExercisesForCut(day, workoutDays);
-      break;
-    case 'Strength':
-      dayExercises = await getExercisesForStrength(day, workoutDays);
-      break;
+        case 'Gain':
+          dayExercises = await getExercisesForGain(day, workoutDays);
+          break;
+        case 'Cut':
+          dayExercises = await getExercisesForCut(day, workoutDays);
+          break;
+        case 'Strength':
+          dayExercises = await getExercisesForStrength(day, workoutDays);
+          break;
       }
 
       setExercises(dayExercises);
@@ -55,6 +103,10 @@ const WorkoutDay = ({ route }) => {
       console.error('Error fetching exercises:', error);
     }
   };
+
+  useEffect(() => {
+    fetchExercises(day, daysPerWeek);
+  }, [day, daysPerWeek]);
 
   const assignSetsAndReps = (exercises, sets, reps) => {
     return exercises.map((exercise) => {
@@ -793,8 +845,14 @@ const getExercisesForStrength = async (day, workoutDays) => {
 };
 
 const renderItem = ({ item }) => {
-  return <ExerciseCardWrapper exercise={item} workoutSessionId={workoutSessionId} />;
+  return (
+    <View>
+      <ExerciseCardWrapper exercise={item} workoutSessionId={workoutSessionId} swapExercise={swapExercise} />
+    </View>
+  );
 };
+
+
 
 
 
@@ -804,18 +862,19 @@ useEffect(() => {
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>
-        Week {week} - Day {day}
-      </Text>
-      <FlatList
-        data={exercises}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
-      />
-    </View>
-  );
+  <View style={styles.container}>
+    <Text style={styles.headerText}>
+      Week {week} - Day {day}
+    </Text>
+    {loading && <ActivityIndicator size="large" color="#0000ff" />}
+    <FlatList
+      data={exercises}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      contentContainerStyle={styles.contentContainer}
+    />
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
@@ -823,11 +882,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
+    backgroundColor: '#1A1A1D',
   },
   headerText: {
     fontSize: 24,
     fontWeight: '500',
     marginBottom: 20,
+    color: '#FFFFFF',
   },
   contentContainer: {
     paddingBottom: 20,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { listExerciseLogs } from '../graphql/queries';
 import { Card, Title } from 'react-native-paper';
@@ -75,13 +75,45 @@ const ProgressScreen = () => {
   }, []);
 
   return (
-    <ScrollView>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
+    <ScrollView style={progressStyles.container}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', color: 'white' }}>
         Progress Screen
       </Text>
-      <WorkoutStreak exerciseLogs={exerciseLogs} />
+      <WorkoutStreak exerciseLogs={exerciseLogs}/>
     </ScrollView>
   );
 };
+
+  const progressStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#1A1A1D',
+      padding: 20,
+    },
+    headerText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 10,
+      color: '#FFFFFF',
+    },
+    contentContainer: {
+      paddingBottom: 20,
+    },
+    chartContainer: {
+      backgroundColor: '#404040',
+      borderRadius: 10,
+      padding: 20,
+      marginBottom: 20,
+    },
+    chartTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#FFFFFF',
+      marginBottom: 10,
+    },
+    // Add more styles as needed for the progress screen components
+  });
+
 
 export default ProgressScreen;

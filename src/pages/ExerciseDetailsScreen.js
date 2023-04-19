@@ -4,12 +4,14 @@ import LoggedExerciseCard from '../components/WorkoutDay';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createSessionExercise } from '../graphql/mutations';
 import { LinearGradient } from 'expo-linear-gradient';
+import ExerciseCardWrapper from '../components/ExerciseCard';
+
 
 const API_KEY = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
 
-const   ExerciseDetailsScreen = ({ route, navigation }) => {
-  const { exercise, workoutSessionId } = route.params;
-  const [videoId, setVideoId] = useState(null);
+const ExerciseDetailsScreen = ({ route, navigation }) => {
+  const { id, workoutSessionId } = route.params;
+  const [exercise, setExercise] = React.useState({ ...exercise, videoId: null });
 
   useEffect(() => {
     const fetchYoutubeVideo = async () => {
@@ -22,7 +24,7 @@ const   ExerciseDetailsScreen = ({ route, navigation }) => {
 
         const data = await response.json();
         if (data.items && data.items.length > 0) {
-          setVideoId(data.items[0].id.videoId);
+          setExercise({ ...exercise, videoId: data.items[0].id.videoId });
         }
       } catch (error) {
         console.error('Error fetching YouTube video:', error);
@@ -32,9 +34,10 @@ const   ExerciseDetailsScreen = ({ route, navigation }) => {
     fetchYoutubeVideo();
   }, [exercise]);
 
+
   const openYoutubeVideo = () => {
   if (videoId) {
-    Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`);
+    navigation.navigate('YoutubeVideo', { videoId });
   }
 };
 
@@ -62,15 +65,11 @@ const   ExerciseDetailsScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{exercise.name}</Text>
-      {videoId && (
-        <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
-          <Text style={styles.videoLinkText}>Watch on YouTube</Text>
-        </TouchableOpacity>
-      )}
-      <LoggedExerciseCard
+      <ExerciseCardWrapper
         exercise={{ ...exercise, videoId }} // Pass videoId along with exercise
         onStopLogging={onStopLogging}
         workoutSessionId={workoutSessionId}
+        navigation={navigation} // Pass navigation prop here
       />
     </View>
   );

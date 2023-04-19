@@ -5,9 +5,9 @@ import { Auth } from 'aws-amplify';
 import { createExerciseLog } from '../graphql/mutations';
 import { getLatestExerciseLog } from '../graphql/queries';
 import { LinearGradient } from 'expo-linear-gradient';
-
-
-const ExerciseCardWrapper = ({ exercise, navigation, workoutSessionId }) => {
+import { rapidApiKey } from './WorkoutDay'
+import axios from "axios";
+const ExerciseCardWrapper = ({ exercise, workoutSessionId, navigation }) => {
   const [isLogging, setIsLogging] = useState(false);
   const [lastSetInput, setLastSetInput] = useState('');
   const [lastWeightInput, setLastWeightInput] = useState('');
@@ -62,53 +62,68 @@ const ExerciseCardWrapper = ({ exercise, navigation, workoutSessionId }) => {
         />
       ) : (
         <ExerciseCard exercise={exercise} onStartLogging={toggleLogging} navigation={navigation} videoId={exercise.videoId} />
-
       )}
     </>
   );
 };
 
-const ExerciseCard = ({ exercise, onStartLogging, navigation, videoId }) => {
-  const handleCardPress = () => {
-    navigation.navigate('ExerciseDetails', { exercise });
-  };
-
+const ExerciseCard = ({ exercise, onStartLogging, navigation, swapExercise }) => {
+  const [loading, setLoading] = useState(false);
   const openYoutubeVideo = () => {
     if (exercise.videoId) {
       Linking.openURL(`https://www.youtube.com/watch?v=${exercise.videoId}`);
     }
   };
-  return (
-    <TouchableOpacity activeOpacity={1} onPress={handleCardPress}>
-      <LinearGradient
-        colors={['#303030', '#303030']} // Change the background color
-        start={[0, 0]}
-        end={[1, 0]}
-        style={styles.card}
-      >
-        <Image style={styles.gif} source={{ uri: exercise.gifUrl }} />
-        <View style={styles.cardContent}>
-          <Text style={styles.name}>{exercise.name}</Text>
-          <Text style={styles.info}>
-            Equipment: {exercise.equipment}{'\n'}
-            Target: {exercise.target}{'\n'}
-            Body Part: {exercise.bodyPart}{'\n'}
-            Sets: {exercise.sets}{'\n'}
-            Reps: {exercise.reps.join('/')}
-          </Text>
-          {exercise.videoId && (
-            <TouchableOpacity onPress={openYoutubeVideo} style={styles.videoLink}>
-              <Text style={styles.videoLinkText}>Watch on YouTube</Text>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={onStartLogging} style={styles.logButton} activeOpacity={0.8}>
-            <Text style={styles.logButtonText}>Log Exercise</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
+
+  const handleSwapExercise = async () => {
+  try {
+    setLoading(true);
+
+    const currentExercise = exercise;
+
+
+    // Replace the current exercise with the newExercise in the parent component
+    swapExercise(currentExercise.id, newExercise);
+  } catch (error) {
+    console.error('Error swapping exercise:', error);
+  } finally {
+    setLoading(false);
+  }
 };
+
+
+
+  return (
+  <TouchableOpacity activeOpacity={1} onPress={openYoutubeVideo}>
+    <LinearGradient
+      colors={['#303030', '#303030']} // Change the background color
+      start={[0, 0]}
+      end={[1, 0]}
+      style={styles.card}
+    >
+      <Image style={styles.gif} source={{ uri: exercise.gifUrl }} />
+      <View style={styles.cardContent}>
+        <Text style={styles.name}>{exercise.name}</Text>
+        <Text style={styles.info}>
+          Equipment: {exercise.equipment}{'\n'}
+          Target: {exercise.target}{'\n'}
+          Body Part: {exercise.bodyPart}{'\n'}
+          Sets: {exercise.sets}{'\n'}
+          Reps: {exercise.reps.join('/')}
+        </Text>
+        <TouchableOpacity onPress={onStartLogging} style={styles.logButton} activeOpacity={0.8}>
+          <Text style={styles.logButtonText}>Start Logging</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSwapExercise} style={styles.swapButton} activeOpacity={0.8}>
+          <Text style={styles.swapButtonText}>Swap Exercise</Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
+  </TouchableOpacity>
+);
+};
+
+
 
 
 
@@ -183,7 +198,7 @@ const LoggedExerciseCard = ({
       )}
       {sets.map((_, index) => (
           <View key={`${exercise.name}-${index}`} style={styles.inputRow}>
-          <Text style={styles.setInputLabel}>Set {index + 1}</Text>
+          <Text style={[styles.setInputLabel, { color: '#FFFFFF' }]}>Set {index + 1}</Text>
           <TextInput
             style={styles.setInput}
             keyboardType="numeric"
@@ -225,7 +240,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   cardContent: {
-    backgroundColor: '#303030',
+    backgroundColor: '#1A1A1D',
     borderRadius: 10,
     padding: 20,
     marginTop: -25,
@@ -249,16 +264,18 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   logButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0E7C7B',
     borderRadius: 5,
     paddingVertical: 8,
     paddingHorizontal: 20,
     marginTop: 15,
   },
   logButtonText: {
-    color: '#1E90FF',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '500',
+    backgroundColor: '#0E7C7B',
+
   },
   videoLink: {
     backgroundColor: '#FF0000',
@@ -272,6 +289,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+   youtubeExplanationButton: {
+    backgroundColor: '#FF0000',
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  youtubeExplanationButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  swapButton: {
+  backgroundColor: '#0E7C7B',
+  borderRadius: 5,
+  paddingVertical: 8,
+  paddingHorizontal: 20,
+  marginTop: 10,
+},
+swapButtonText: {
+  color: '#FFFFFF',
+  fontSize: 16,
+  fontWeight: '500',
+},
+ setInput: {
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 4,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      marginRight: 8,
+      width: 80,
+      textAlign: 'center',
+      fontSize: 16,
+    },
+
 });
 
 export default ExerciseCardWrapper;

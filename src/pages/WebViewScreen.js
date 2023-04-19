@@ -1,24 +1,15 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-const WebViewScreen = ({ route }) => {
-  const { url } = route.params;
+const YoutubeVideoScreen = ({ route }) => {
+  const { videoId } = route.params;
 
   return (
-    <View style={styles.container}>
-      <WebView source={{ uri: url }} style={styles.webview} />
-    </View>
+    <WebView
+      source={{ uri: `https://www.youtube.com/embed/${videoId}` }}
+      style={{ flex: 1 }}
+    />
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  webview: {
-    flex: 1,
-  },
-});
-
-export default WebViewScreen;
+export default YoutubeVideoScreen;
