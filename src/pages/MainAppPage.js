@@ -86,18 +86,20 @@ const HomeScreen = ({ navigation }) => {
   );
 
   if (!userData) {
-    return (
-      <View style={styles.homeContainer}>
-        <Text style={CommonStyles.title}>Welcome!</Text>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={() => navigation.navigate('ProfileEdit')}
-        >
-          <Text style={styles.profileButtonText}>Create your profile</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.homeContainer}>
+      <Text style={[CommonStyles.title, { color: '#FFFFFF' }]}>Welcome!</Text>
+      <TouchableOpacity
+        style={styles.profileButton}
+        onPress={() => navigation.navigate('ProfileEdit')}
+      >
+        <Text style={styles.profileButtonText}>
+          Create your profile
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -235,6 +237,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
   },
+  homeContainer: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   profileButton: {
     backgroundColor: '#0E7C7B',
     paddingHorizontal: 20,
@@ -250,10 +258,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   profileButtonText: {
-    color: '#E6E6E6',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 18,
   },
+
 });
 
 export default MainAppPage;

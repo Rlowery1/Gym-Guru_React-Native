@@ -58,15 +58,20 @@ const ProfileScreen = ({ navigation }) => {
   }
 
   if (!userData) {
-    return (
-      <View style={styles.profileContainer}>
-        <Text>No profile found. Please create your profile.</Text>
-        <TouchableOpacity style={styles.createButton} onPress={handleCreateProfile}>
-          <Text style={styles.createText}>Create Profile</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.profileContainer}>
+      <Text style={styles.noProfileText}>
+        No profile found. Please create your profile.
+      </Text>
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={handleCreateProfile}
+      >
+        <Text style={styles.createText}>Create Profile</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
   return (
     <View style={styles.profileContainer}>
@@ -89,45 +94,67 @@ const ProfileScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    profileContainer: {
-      flex: 1,
-      backgroundColor: '#1A1A1D',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    profileImage: {
-      width: 150,
-      height: 150,
-      borderRadius: 75,
-      marginBottom: 20,
-    },
-    name: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#E6E6E6',
-      marginBottom: 10,
-    },
-    age: {
-      fontSize: 18,
-      color: '#E6E6E6',
-      marginBottom: 10,
-    },
-    button: {
-      backgroundColor: '#0E7C7B',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 6,
-      marginTop: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    buttonText: {
-      color: '#E6E6E6',
-      fontSize: 18,
-    },
-  });
+  profileContainer: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#E6E6E6',
+    marginBottom: 10,
+  },
+  age: {
+    fontSize: 18,
+    color: '#E6E6E6',
+    marginBottom: 10,
+  },
+  noProfileText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  createButton: {
+    backgroundColor: '#0E7C7B',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 6,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  createText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  button: {
+    backgroundColor: '#0E7C7B',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 6,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonText: {
+    color: '#E6E6E6',
+    fontSize: 18,
+  },
+});
 
 export default ProfileScreen;
