@@ -86,6 +86,7 @@ const ProfileScreen = ({ navigation }) => {
       <Text style={styles.age}>Gender: {userData.gender}</Text>
       <Text style={styles.age}>Workout Days: {userData.workoutDays}</Text>
       <Text style={styles.age}>Fitness Goal: {userData.fitnessGoal}</Text>
+      <Text style={styles.currentWorkoutStreak}>Current Workout Streak: {userData.workoutDays}</Text>
       <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
         <Text style={styles.buttonText}>Edit Profile</Text>
       </TouchableOpacity>
@@ -154,6 +155,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#E6E6E6',
     fontSize: 18,
+  },
+  currentWorkoutStreak: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginBottom: 10,
   },
 });
 

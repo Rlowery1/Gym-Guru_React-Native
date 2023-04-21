@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Auth } from 'aws-amplify';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 const ForgotPasswordPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -39,6 +41,9 @@ const ForgotPasswordPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={30} color="#E6E6E6" />
+      </TouchableOpacity>
       <Text style={styles.title}>Forgot Password</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomInput
@@ -67,16 +72,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#E6E6E6',
   },
-    error: {
+  error: {
     color: '#E63946',
     marginBottom: 10,
   },
   timerText: {
-    color: '#ffffff',
+    color: '#E6E6E6',
     marginTop: 10,
     textAlign: 'center',
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+  },
 });
-
 export default ForgotPasswordPage;
 

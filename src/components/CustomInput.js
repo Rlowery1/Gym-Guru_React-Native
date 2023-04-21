@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-
+import CommonStyles from '../styles/GlobalStyles';
 const CustomInput = ({ onChangeText, value, ...props }) => {
   return (
     <View style={styles.inputContainer}>

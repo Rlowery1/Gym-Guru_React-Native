@@ -8,6 +8,13 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import * as Notifications from 'expo-notifications';
+import { LinearGradient } from 'expo-linear-gradient';
+
+
+
+
+
 
 const WorkoutScreen = ({ onDaysChange }) => {
   const navigation = useNavigation();
@@ -18,12 +25,51 @@ const WorkoutScreen = ({ onDaysChange }) => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+
+  const scheduleNotification = async () => {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Workout Reminder',
+      body: 'Time for your daily workout!',
+    },
+    trigger: {
+      seconds: 60 * 60 * 24, // Schedule a notification 24 hours from now
+      repeats: true,
+    },
+  });
+};
+useFocusEffect(
+  React.useCallback(() => {
+    const fetchWorkoutSettings = async () => {
+      const savedWorkoutDays = await AsyncStorage.getItem('workoutDays');
+      const savedFitnessGoal = await AsyncStorage.getItem('fitnessGoal');
+
+      if (savedWorkoutDays) {
+        setDaysPerWeek(parseInt(savedWorkoutDays, 10));
+      }
+
+      if (savedFitnessGoal) {
+        setFitnessGoal(savedFitnessGoal);
+      }
+
+      // Call the scheduleNotification function here
+      await scheduleNotification();
+    };
+
+    fetchWorkoutSettings();
+  }, [])
+);
+
   const handleWeekChange = (change) => {
-    const newWeek = week + change;
-    if (newWeek >= 1 && newWeek <= 4) {
-      setWeek(newWeek);
-    }
-  };
+  const newWeek = week + change;
+  if (newWeek >= 1 && newWeek <= 4) {
+    setWeek(newWeek);
+  } else if (newWeek > 4) {
+    setWeek(1);
+  } else if (newWeek < 1) {
+    setWeek(4);
+  }
+};
 
   const handleDayPress = (day) => {
     navigation.navigate('WorkoutDay', { week, day, days: daysPerWeek });
@@ -118,32 +164,36 @@ const WorkoutScreen = ({ onDaysChange }) => {
         />
       ) : (
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => handleWeekChange(-1)}>
-            <Text style={styles.buttonText}>{'<'}</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>
-            Week {week} - {daysPerWeek} Days
-          </Text>
-          <TouchableOpacity onPress={() => handleWeekChange(1)}>
-            <Text style={styles.buttonText}>{'>'}</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => handleWeekChange(-1)}>
+          <Text style={styles.buttonText}>{'<'}</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>
+          Week {week} - {daysPerWeek} Days
+        </Text>
+        <TouchableOpacity onPress={() => handleWeekChange(1)}>
+          <Text style={styles.buttonText}>{'>'}</Text>
+        </TouchableOpacity>
+      </View>
       )}
       <View style={styles.daysContainer}>
         {Array.from({ length: daysPerWeek }, (_, i) => (
-          <TouchableOpacity
-            key={i}
-            style={styles.dayButton}
-            onPress={() => handleDayPress(i + 1)}
-          >
-            <Text style={styles.dayText}>Day {i + 1}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <WorkoutDaysSelector daysPerWeek={daysPerWeek} />
-    </SafeAreaView>
-  );
-};
+      <TouchableOpacity key={i} onPress={() => handleDayPress(i + 1)}>
+        <LinearGradient
+          colors={['#0E7C7B', '#0A6969']} // Gradient colors
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.dayButton}
+        >
+          <Ionicons name="md-calendar" size={24} color="#FFFFFF" />
+          <Text style={styles.dayText}>Day {i + 1}</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+    ))}
+        </View>
+        <WorkoutDaysSelector daysPerWeek={daysPerWeek} />
+      </SafeAreaView>
+    );
+  };
 
 const styles = StyleSheet.create({
   container: {
@@ -174,14 +224,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dayButton: {
-    backgroundColor: '#0E7C7B',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    flexGrow: 1,
-    alignItems: 'center',
+  borderRadius: 10,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  marginBottom: 20,
+  flexGrow: 1,
+  alignItems: 'center',
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+},
   dayText: {
     color: '#FFFFFF',
     fontSize: 16,

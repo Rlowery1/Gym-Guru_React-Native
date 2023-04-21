@@ -11,6 +11,7 @@ import ExerciseDetailsScreen from '../pages/ExerciseDetailsScreen';
 import WebViewScreen from '../pages/WebViewScreen';
 import YoutubeVideoScreen from '../pages/WebViewScreen';
 
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

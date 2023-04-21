@@ -9,6 +9,7 @@ import { Auth } from 'aws-amplify';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
 import { validateEmail, validatePassword } from '../utils/validate';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SignInPage = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -39,6 +40,13 @@ const SignInPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Add a back button */}
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="arrow-left" size={30} color="#E6E6E6" />
+      </TouchableOpacity>
       <Text style={styles.title}>GymGuru</Text>
       <CustomInput
         onChangeText={setEmail}
@@ -70,6 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1A1A1D',
     paddingHorizontal: 16,
   },
+
   title: {
     fontSize: 36,
     fontWeight: 'bold',
@@ -92,6 +101,12 @@ const styles = StyleSheet.create({
   textWhite: {
     color: '#ffffff',
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+  },
+
 });
 
 export default SignInPage;

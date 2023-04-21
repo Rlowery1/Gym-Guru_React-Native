@@ -5,7 +5,7 @@ import { Auth } from 'aws-amplify';
 import { Alert } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
 import CustomInput from '../components/CustomInput';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const SignUpPage = ({ navigation }) => {
@@ -80,6 +80,9 @@ const SignUpPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={30} color="#ffffff" />
+      </TouchableOpacity>
       {!confirmation ? (
         <>
           <Text style={styles.title}>Sign Up for GymGuru</Text>
@@ -196,6 +199,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: '#E6E6E6',
     textDecorationLine: 'underline',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
   },
 });
 
