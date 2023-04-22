@@ -26,17 +26,12 @@ import WorkoutDay from '../components/WorkoutDay';
 import ProgressScreen from './ProgressScreen';
 import { listExerciseLogs } from '../graphql/queries';
 import CommonStyles from '../styles/GlobalStyles';
-import yourLogo from '../../assets/gainguru-high-resolution-logo-black-on-transparent-background.png';
+import yourLogo from '../../assets/GainGuru_logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DailyNutritionTips from '../components/DailyNutritionTips';
 import SocialFeed from '../components/SocialFeed';
 import FeaturedChallenges from '../components/FeaturedChallenges';
 import WorkoutOfTheDay from '../components/WorkoutOfTheDay';
-import DailyNutritionTipsDetails from '../pages/DailyNutritionTipsDetails';
-import SocialFeedDetails from '../pages/SocialFeedDetails';
-import FeaturedChallengesDetails from '../pages/FeaturedChallengesDetails';
-import WorkoutOfTheDayDetails from '../pages/WorkoutOfTheDayDetails';
-
 
 
 
@@ -235,25 +230,25 @@ return (
         <View style={styles.cardsContainer}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('DailyNutritionTips')}
+          onPress={() => navigation.navigate('DailyNutritionTipsScreen')}
         >
-          <Text style={styles.cardText}>Daily Nutrition Tips</Text>
+          <Text style={styles.cardText}>Daily Nutrition Ideas</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate( 'SocialFeedDetails' )}
+          onPress={() => navigation.navigate('SocialFeedScreen')}
         >
           <Text style={styles.cardText}>Social Feed</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('FeaturedChallengesDetails' )}
+          onPress={() => navigation.navigate('FeaturedChallengesScreen')}
         >
           <Text style={styles.cardText}>Featured Challenges</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate( 'WorkoutOfTheDayDetails' )}
+          onPress={() => navigation.navigate('WorkoutOfTheDayScreen')}
         >
           <Text style={styles.cardText}>Workout Of The Day</Text>
         </TouchableOpacity>
@@ -340,10 +335,10 @@ fetchUser();
   <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
   <Tab.Screen name="Progress" component={ProgressScreen} />
   <Tab.Screen name="Profile" component={ProfileStackNavigator} />
-  <Tab.Screen name="DailyNutritionTips" component={DailyNutritionTipsStackNavigator} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="SocialFeed" component={SocialFeedStackNavigator} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="FeaturedChallenges" component={FeaturedChallengesStackNavigator} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="WorkoutOfTheDay" component={WorkoutOfTheDayStackNavigator} options={{ tabBarButton: () => null }} />
+  <Tab.Screen name="DailyNutritionTipsScreen" component={DailyNutritionTips} options={{ tabBarButton: () => null }} />
+  <Tab.Screen name="SocialFeedScreen" component={SocialFeed} options={{ tabBarButton: () => null }} />
+  <Tab.Screen name="FeaturedChallengesScreen" component={FeaturedChallenges} options={{ tabBarButton: () => null }} />
+  <Tab.Screen name="WorkoutOfTheDayScreen" component={WorkoutOfTheDay} options={{ tabBarButton: () => null }} />
 </Tab.Navigator>
 </View>
   );

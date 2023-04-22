@@ -16,6 +16,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 
+
+
+
 const WorkoutScreen = ({ onDaysChange }) => {
   const navigation = useNavigation();
   const [week, setWeek] = useState(1);

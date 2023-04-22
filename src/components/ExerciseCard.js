@@ -333,6 +333,12 @@ swapButtonText: {
   textAlign: 'center',
   fontSize: 16,
     },
+  headerText: {
+    fontSize: 24,
+    fontWeight: '500',
+    marginBottom: 20,
+    color: '#FFFFFF',
+  },
 });
 
 export default ExerciseCardWrapper;

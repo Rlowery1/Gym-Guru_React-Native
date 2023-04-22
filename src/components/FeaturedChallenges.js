@@ -1,34 +1,101 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons';
+import pushUpPhoto from '../../assets/push_up_photo.jpg';
+import cardioPhoto from '../../assets/cardio_photo.jpg';
 
-const FeaturedChallenges = () => {
+
+
+
+const challenges = [
+  { id: 1, title: '30-Day Push-up Challenge', difficulty: 'Intermediate', image: pushUpPhoto },
+  { id: 2, title: '7-Day Cardio Challenge', difficulty: 'Beginner', image: cardioPhoto },
+  // Add more challenges or fetch them from an API
+];
+
+const FeaturedChallenges = ({ navigation }) => {
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.challengeItem}
+      onPress={() => console.log('Challenge pressed')}
+    >
+      <Image style={styles.challengeImage} source={item.image} />
+      <View style={styles.challengeTextContainer}>
+        <Text style={styles.challengeTitle}>{item.title}</Text>
+        <Text style={styles.challengeDifficulty}>{item.difficulty}</Text>
+      </View>
+      <Icon
+        style={styles.arrowIcon}
+        name="chevron-forward"
+        size={30}
+        color="#FFFFFF"
+      />
+    </TouchableOpacity>
+  );
+
   return (
-  <TouchableOpacity onPress={() => navigation.navigate('FeaturedChallenges')}>
     <View style={styles.container}>
       <Text style={styles.title}>Featured Challenges</Text>
-      {/* Add your content for featured challenges here */}
+      <FlatList
+        data={challenges}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
-  </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-   container: {
-    backgroundColor: '#2A2A2D',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+  container: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+    padding: 10,
   },
   title: {
-    color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 10,
+  },
+  challengeItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: '#252525',
+  },
+  challengeImage: {
+    width: 100,
+    height: 100,
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
+  },
+  challengeTextContainer: {
+    padding: 10,
+    flex: 1,
+  },
+  challengeTitle: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginBottom: 5,
+  },
+  challengeDifficulty: {
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  arrowIcon: {
+    marginLeft: 'auto',
+    marginRight: 10,
   },
 });
 
