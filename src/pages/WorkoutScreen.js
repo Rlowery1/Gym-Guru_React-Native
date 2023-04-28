@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image, Animated } from 'react-native';
 import { getWorkout } from '../data/workouts';
 import WorkoutCard from '../components/WorkoutCard';
 import WorkoutDaysSelector from '../components/WorkoutDaysSelector';
@@ -27,6 +27,44 @@ const WorkoutScreen = ({ onDaysChange }) => {
   const [fitnessGoal, setFitnessGoal] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+  const headerTextRef = React.useRef(null);
+  const [animatedValue] = useState(new Animated.Value(0));
+
+
+
+
+
+  const fadeIn = () => {
+  // Reset the animated values
+  fadeAnim.setValue(0);
+  animatedValue.setValue(0);
+
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, 0],
+  });
+
+  Animated.parallel([
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }),
+    Animated.timing(animatedValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }),
+  ]).start();
+};
+
+
+
+
+
+
+
 
 
   const scheduleNotification = async () => {
@@ -41,6 +79,8 @@ const WorkoutScreen = ({ onDaysChange }) => {
     },
   });
 };
+
+
 useFocusEffect(
   React.useCallback(() => {
     const fetchWorkoutSettings = async () => {
@@ -60,8 +100,12 @@ useFocusEffect(
     };
 
     fetchWorkoutSettings();
+    fadeIn(); // Move this line here to run the animation every time the screen is focused
   }, [])
 );
+
+
+
 
   const handleWeekChange = (change) => {
   const newWeek = week + change;
@@ -127,24 +171,7 @@ useFocusEffect(
     }
   }, [searchInput]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchWorkoutSettings = async () => {
-        const savedWorkoutDays = await AsyncStorage.getItem('workoutDays');
-        const savedFitnessGoal = await AsyncStorage.getItem('fitnessGoal');
 
-        if (savedWorkoutDays) {
-          setDaysPerWeek(parseInt(savedWorkoutDays, 10));
-        }
-
-        if (savedFitnessGoal) {
-          setFitnessGoal(savedFitnessGoal);
-        }
-      };
-
-      fetchWorkoutSettings();
-    }, [])
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -170,9 +197,25 @@ useFocusEffect(
         <TouchableOpacity onPress={() => handleWeekChange(-1)}>
           <Text style={styles.buttonText}>{'<'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerText}>
+        <Animated.Text
+          style={[
+            styles.headerText,
+            {
+              opacity: fadeAnim,
+              transform: [
+                {
+                  translateY: animatedValue.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-50, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+          ref={headerTextRef}
+        >
           Week {week} - {daysPerWeek} Days
-        </Text>
+        </Animated.Text>
         <TouchableOpacity onPress={() => handleWeekChange(1)}>
           <Text style={styles.buttonText}>{'>'}</Text>
         </TouchableOpacity>

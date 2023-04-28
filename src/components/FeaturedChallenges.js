@@ -11,9 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import pushUpPhoto from '../../assets/push_up_photo.jpg';
 import cardioPhoto from '../../assets/cardio_photo.jpg';
-
-
-
+import Loading from '../components/Loading';
 
 const challenges = [
   { id: 1, title: '30-Day Push-up Challenge', difficulty: 'Intermediate', image: pushUpPhoto },
@@ -22,6 +20,20 @@ const challenges = [
 ];
 
 const FeaturedChallenges = ({ navigation }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Replace this with your actual data fetching function
+    fetchChallenges().then(() => {
+      setLoading(false);
+    });
+  }, []);
+
+  const fetchChallenges = async () => {
+    // Add your actual data fetching logic here
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.challengeItem}
@@ -43,15 +55,25 @@ const FeaturedChallenges = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Featured Challenges</Text>
-      <FlatList
-        data={challenges}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Text style={styles.title}>Featured Challenges</Text>
+          <FlatList
+            data={challenges}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </>
+      )}
     </View>
   );
 };
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {

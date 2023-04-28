@@ -16,6 +16,12 @@ import {getExercisesByEquipment, getExercisesByTarget, getExercisesByBodyPart} f
 import { useFocusEffect } from '@react-navigation/native';
 
 
+
+
+
+
+
+
 const fetchUserProfile = async () => {
   try {
     const currentUser = await Auth.currentAuthenticatedUser();
@@ -34,9 +40,21 @@ const fetchUserProfile = async () => {
 const WorkoutDay = ({ route }) => {
   const { week, day, days: daysPerWeek, workoutSessionId } = route.params;
   const [exercises, setExercises] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const rapidApiKey = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
   const [userProfile, setUserProfile] = useState(null);
+
+
+
+
+  const LoadingScreen = () => {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#0E7C7B" />
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
+  );
+};
 
   const swapExercise = async (exerciseId) => {
     try {
@@ -829,6 +847,7 @@ const WorkoutDay = ({ route }) => {
     }
 
     setExercises(dayExercises);
+    setLoading(false);
   } catch (error) {
     console.error('Error fetching exercises:', error);
   }
@@ -871,19 +890,19 @@ const renderItem = ({ item }) => {
 };
 
 return (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>
-        Week {week} - Day {day}
-      </Text>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      <FlatList
-        data={exercises}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
-      />
-    </View>
-  );
+  <View style={styles.container}>
+    <Text style={styles.headerText}>
+      Week {week} - Day {day}
+    </Text>
+    <FlatList
+      data={exercises}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      contentContainerStyle={styles.contentContainer}
+    />
+    {loading && <LoadingScreen />}
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
@@ -902,5 +921,21 @@ const styles = StyleSheet.create({
     contentContainer: {
       paddingBottom: 20,
     },
+    loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(26, 26, 29, 0.8)',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '500',
+  },
   });
 export default WorkoutDay;

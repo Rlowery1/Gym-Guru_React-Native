@@ -12,6 +12,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import myImage from '../../assets/cover_photo_1.png'
 import gymPhoto from '../../assets/gym_photo.jpg';
 import runningPhoto from '../../assets/running_photo.jpg';
+import Loading from '../components/Loading';
+
+
 const PostItem = ({ item, onDelete }) => {
   const postImage = item.text === 'Great workout today!' ? gymPhoto : runningPhoto;
   return (
@@ -43,6 +46,13 @@ const SocialFeed = () => {
     },
   ]);
 
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
   const addNewPost = () => {
     const newPost = {
       id: data.length + 1,
@@ -60,17 +70,23 @@ const SocialFeed = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <View style={styles.header}>
         <Text style={styles.title}>Social Feed</Text>
         <TouchableOpacity onPress={addNewPost}>
           <Icon name="add-circle" size={30} color="#0E7C7B" />
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </>
+      )}
     </View>
   );
 };

@@ -1,10 +1,10 @@
 // src/pages/ResetPasswordPage.js
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Auth } from 'aws-amplify';
 import CustomButton from '../components/CustomButton';
 import CustomInput from '../components/CustomInput';
-import CommonStyles from '../styles/GlobalStyles';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ResetPasswordPage = ({ route, navigation }) => {
   const { email } = route.params;
@@ -27,14 +27,18 @@ const ResetPasswordPage = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={CommonStyles.title}>Reset Password</Text>
-      {error ? <Text style={CommonStyles.title}>>{error}</Text> : null}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={30} color="#FFFFFF" />
+      </TouchableOpacity>
+      <Text style={styles.title}>Reset Password</Text>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       <CustomInput
         onChangeText={setConfirmationCode}
         value={confirmationCode}
         placeholder="Confirmation Code"
         keyboardType="numeric"
         textContentType="oneTimeCode"
+        placeholderTextColor="#FFFFFF"
       />
       <CustomInput
         onChangeText={setNewPassword}
@@ -42,6 +46,7 @@ const ResetPasswordPage = ({ route, navigation }) => {
         placeholder="New Password"
         secureTextEntry
         textContentType="password"
+        placeholderTextColor="#FFFFFF"
       />
       <CustomButton title="Reset Password" onPress={resetPassword} />
     </View>
@@ -51,18 +56,23 @@ const ResetPasswordPage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#1A1A1D',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#0d2c4f',
+    color: '#FFFFFF',
   },
   error: {
-    color: 'red',
+    color: '#E63946',
     marginBottom: 10,
   },
 });

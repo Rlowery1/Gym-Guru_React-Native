@@ -15,6 +15,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import ProfileEditScreen from './ProfileEditScreen';
 import ProfileScreen from './ProfileScreen';
@@ -32,6 +33,7 @@ import DailyNutritionTips from '../components/DailyNutritionTips';
 import SocialFeed from '../components/SocialFeed';
 import FeaturedChallenges from '../components/FeaturedChallenges';
 import WorkoutOfTheDay from '../components/WorkoutOfTheDay';
+
 
 
 
@@ -112,6 +114,17 @@ const WorkoutOfTheDayStackNavigator = () => {
 };
 
 
+const LoadingScreen = ({ isLoading, children }) => {
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0E7C7B" />
+      </View>
+    );
+  }
+  return children;
+};
+
 
 const HomeScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
@@ -120,8 +133,15 @@ const HomeScreen = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredExercises, setFilteredExercises] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // const allExercises = []; Replace this with your actual list of exercises
+
+  const handleNavigation = async (screen) => {
+    setIsLoading(true);
+    await navigation.navigate(screen);
+    setIsLoading(false);
+  };
+
 
   const filterExercises = (query) => {
   if (query === '') {
@@ -193,68 +213,69 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.homeContainer}>
           <Text style={[CommonStyles.title, { color: '#FFFFFF' }]}>Welcome!</Text>
           <TouchableOpacity
-            style={styles.profileButton}
-            onPress={() => navigation.navigate('ProfileEdit')}
-          >
-            <Text style={styles.profileButtonText}>Create your profile</Text>
-          </TouchableOpacity>
+          style={styles.profileButton}
+          onPress={() => navigation.navigate('Profile', { screen: 'ProfileEdit' })}
+        >
+          <Text style={styles.profileButtonText}>Create your profile</Text>
+        </TouchableOpacity>
         </View>
       );
     }
 
 return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.logoContainer}>
-          <Image source={yourLogo} style={styles.logo} />
-        </View>
-        <View style={styles.searchBarContainer}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search for exercises or workouts"
-            onChangeText={text => setSearchQuery(text)}
-            value={searchQuery}
-          />
-        </View>
-        <View style={styles.exercisesContainer}>
-          {filteredExercises.map((exercise, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.exerciseItem}
-              onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: exercise.id })}
-            >
-              <Text style={styles.exerciseName}>{exercise.name}</Text>
-            </TouchableOpacity>
+      <LoadingScreen isLoading={isLoading}>
+        <ScrollView>
+            <View style={styles.logoContainer}>
+              <Image source={yourLogo} style={styles.logo} />
+            </View>
+            <View style={styles.searchBarContainer}>
+              <TextInput
+                style={styles.searchBar}
+                placeholder="Search for exercises or workouts"
+                onChangeText={text => setSearchQuery(text)}
+                value={searchQuery}
+              />
+            </View>
+            <View style={styles.exercisesContainer}>
+              {filteredExercises.map((exercise, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.exerciseItem}
+            onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: exercise.id })}
+          >
+            <Text style={styles.exerciseName}>{exercise.name}</Text>
+          </TouchableOpacity>
           ))}
         </View>
         <View style={styles.cardsContainer}>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => navigation.navigate('DailyNutritionTipsScreen')}
-        >
-          <Text style={styles.cardText}>Daily Nutrition Ideas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => navigation.navigate('SocialFeedScreen')}
-        >
-          <Text style={styles.cardText}>Social Feed</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => navigation.navigate('FeaturedChallengesScreen')}
-        >
-          <Text style={styles.cardText}>Featured Challenges</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.card}
-          onPress={() => navigation.navigate('WorkoutOfTheDayScreen')}
-        >
-          <Text style={styles.cardText}>Workout Of The Day</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, styles.dailyNutritionCard]}
+            onPress={() => handleNavigation('DailyNutritionTipsScreen')}
+          >
+            <Text style={styles.cardText}>Daily Nutrition Ideas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, styles.socialFeedCard]}
+            onPress={() => handleNavigation('SocialFeedScreen')}
+          >
+            <Text style={styles.cardText}>Social Feed</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, styles.featuredChallengesCard]}
+            onPress={() => handleNavigation('FeaturedChallengesScreen')}
+          >
+            <Text style={styles.cardText}>Featured Challenges</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.card, styles.workoutOfTheDayCard]}
+            onPress={() => handleNavigation('WorkoutOfTheDayScreen')}
+          >
+            <Text style={styles.cardText}>Workout Of The Day</Text>
+          </TouchableOpacity>
         </View>
-
       </ScrollView>
+      </LoadingScreen>
     </SafeAreaView>
   );
 };
@@ -384,21 +405,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   cardsContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 20,
   },
   card: {
-    backgroundColor: '#0E7C7B',
-    borderRadius: 5,
-    padding: 15,
-    flex: 1,
-    alignItems: 'center',
+    borderRadius: 10,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    marginBottom: 15,
+    width: '100%',
+    backgroundColor: '#0E7C7B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardText: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#FFFFFF',
-    fontSize: 16,
   },
   searchIcon: {
     position: 'absolute',
@@ -433,9 +460,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   profileButton: {
+    backgroundColor: '#0E7C7B',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 6,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
     width: 205,
@@ -504,6 +532,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  dailyNutritionCard: {
+    backgroundColor: '#0E7C7B',
+  },
+  socialFeedCard: {
+    backgroundColor: '#0E7C7B',
+  },
+  featuredChallengesCard: {
+    backgroundColor: '#0E7C7B',
+  },
+  workoutOfTheDayCard: {
+    backgroundColor: '#0E7C7B',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1D',
+  },
+
 });
 
 export default MainAppPage;

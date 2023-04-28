@@ -18,6 +18,7 @@ export const onCreateUser = /* GraphQL */ `
         fitnessGoal
         workoutDays
         updatedAt
+        avatar
         user {
           id
           profileId
@@ -68,6 +69,7 @@ export const onUpdateUser = /* GraphQL */ `
         fitnessGoal
         workoutDays
         updatedAt
+        avatar
         user {
           id
           profileId
@@ -118,6 +120,7 @@ export const onDeleteUser = /* GraphQL */ `
         fitnessGoal
         workoutDays
         updatedAt
+        avatar
         user {
           id
           profileId
@@ -166,6 +169,7 @@ export const onCreateUserProfile = /* GraphQL */ `
       fitnessGoal
       workoutDays
       updatedAt
+      avatar
       user {
         id
         profile {
@@ -178,6 +182,7 @@ export const onCreateUserProfile = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -210,6 +215,7 @@ export const onUpdateUserProfile = /* GraphQL */ `
       fitnessGoal
       workoutDays
       updatedAt
+      avatar
       user {
         id
         profile {
@@ -222,6 +228,7 @@ export const onUpdateUserProfile = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -254,6 +261,7 @@ export const onDeleteUserProfile = /* GraphQL */ `
       fitnessGoal
       workoutDays
       updatedAt
+      avatar
       user {
         id
         profile {
@@ -266,6 +274,7 @@ export const onDeleteUserProfile = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -306,6 +315,7 @@ export const onCreateExerciseLog = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -348,6 +358,7 @@ export const onUpdateExerciseLog = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -390,6 +401,7 @@ export const onDeleteExerciseLog = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }

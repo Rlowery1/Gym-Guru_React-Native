@@ -1,0 +1,26 @@
+{
+  "ledev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-leguru-ledev-104917-authRole",
+      "UnauthRoleArn": "arn:aws:iam::281607684597:role/amplify-leguru-ledev-104917-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::281607684597:role/amplify-leguru-ledev-104917-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-leguru-ledev-104917-deployment",
+      "UnauthRoleName": "amplify-leguru-ledev-104917-unauthRole",
+      "StackName": "amplify-leguru-ledev-104917",
+      "StackId": "arn:aws:cloudformation:us-west-1:281607684597:stack/amplify-leguru-ledev-104917/fe3c3bb0-e135-11ed-a750-0663bbb2a813",
+      "AmplifyAppId": "d36zhy7o6yzqiz"
+    },
+    "categories": {
+      "auth": {
+        "legurue9608668": {}
+      },
+      "api": {
+        "leguru": {}
+      },
+      "storage": {
+        "guruavatarphotos": {}
+      }
+    }
+  }
+}

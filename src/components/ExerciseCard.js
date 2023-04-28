@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TextInput,  TouchableOpacity, Linking } 
 import { API, graphqlOperation } from 'aws-amplify';
 import { Auth } from 'aws-amplify';
 import { createExerciseLog } from '../graphql/mutations';
-import { getLatestExerciseLog } from '../graphql/queries';
+import {getLatestExerciseLog, listExerciseLogs} from '../graphql/queries';
 import { LinearGradient } from 'expo-linear-gradient';
 import { rapidApiKey } from './WorkoutDay'
 import axios from "axios";
@@ -15,6 +15,9 @@ const ExerciseCardWrapper = ({ exercise, workoutSessionId, navigation }) => {
   const [isLogging, setIsLogging] = useState(false);
   const [lastSetInput, setLastSetInput] = useState('');
   const [lastWeightInput, setLastWeightInput] = useState('');
+  const [isSwapping, setIsSwapping] = useState(false);
+  const [swapExercises, setSwapExercises] = useState([]);
+
 
   const toggleLogging = () => {
     setIsLogging(!isLogging);
@@ -35,12 +38,11 @@ const ExerciseCardWrapper = ({ exercise, workoutSessionId, navigation }) => {
       const userId = currentUser.attributes.sub;
       const exerciseName = exercise.name;
 
-      const exerciseLogData = await API.graphql(
-        graphqlOperation(getLatestExerciseLog, {
-          exerciseName: exerciseName,
-          userId: userId,
-        })
-      );
+      const exerciseLogsData = await API.graphql(
+      graphqlOperation(listExerciseLogs, {
+        filter: { user: { id: { eq: user.username } } },
+      }),
+    );
 
       if (exerciseLogData.data.getLatestExerciseLog) {
         const latestLog = exerciseLogData.data.getLatestExerciseLog;
@@ -53,25 +55,72 @@ const ExerciseCardWrapper = ({ exercise, workoutSessionId, navigation }) => {
   };
 
   return (
-    <>
-      {isLogging ? (
-        <LoggedExerciseCard
-          exercise={exercise}
-          onStopLogging={toggleLogging}
-          workoutSessionId={workoutSessionId}
-          lastSetInput={lastSetInput}
-          lastWeightInput={lastWeightInput}
-          setLastSetInput={setLastSetInput}
-          setLastWeightInput={setLastWeightInput}
-        />
-      ) : (
-        <ExerciseCard exercise={exercise} onStartLogging={toggleLogging} navigation={navigation} videoId={exercise.videoId} />
-      )}
-    </>
-  );
+  <>
+    {isLogging ? (
+      <LoggedExerciseCard
+        exercise={exercise}
+        onStopLogging={toggleLogging}
+        workoutSessionId={workoutSessionId}
+        lastSetInput={lastSetInput}
+        lastWeightInput={lastWeightInput}
+        setLastSetInput={setLastSetInput}
+        setLastWeightInput={setLastWeightInput}
+      />
+    ) : (
+      <ExerciseCard
+        exercise={exercise}
+        onStartLogging={toggleLogging}
+        navigation={navigation}
+        videoId={exercise.videoId}
+        isSwapping={isSwapping}
+        swapExercises={swapExercises}
+        handleSelectExercise={handleSelectExercise}
+      />
+    )}
+  </>
+);
 };
 
-const ExerciseCard = ({ exercise, onStartLogging, navigation, swapExercise }) => {
+  const fetchRandomExercises = async (target) => {
+    try {
+      const options = {
+        method: 'GET',
+        url: `https://exercisedb.p.rapidapi.com/exercises/target/${target}`,
+        headers: {
+          'X-RapidAPI-Key': rapidApiKey,
+          'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com',
+        },
+      };
+
+      const response = await axios.request(options);
+      const exercises = response.data;
+      const shuffledExercises = exercises.sort(() => Math.random() - 0.5);
+      const randomExercises = shuffledExercises.slice(0, 4);
+      setSwapExercises(randomExercises);
+    } catch (error) {
+      console.error('Error fetching random exercises:', error);
+    }
+  };
+
+  const handleSwapExercise = async () => {
+    setIsSwapping(true);
+    fetchRandomExercises(exercise.target);
+  };
+
+  const handleSelectExercise = (newExercise) => {
+    swapExercise(exercise, newExercise);
+    setIsSwapping(false);
+  };
+
+const ExerciseCard = ({
+  exercise,
+  onStartLogging,
+  navigation,
+  swapExercise,
+  isSwapping,
+  swapExercises,
+  handleSelectExercise,
+}) => {
   const openYoutubeVideo = () => {
     if (exercise.videoId) {
       Linking.openURL(`https://www.youtube.com/watch?v=${exercise.videoId}`);
@@ -79,24 +128,15 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation, swapExercise }) =>
   };
 
   const handleSwapExercise = async () => {
-  try {
-    setLoading(true);
-
-    const currentExercise = exercise;
-
-
-    // Replace the current exercise with the newExercise in the parent component
-    swapExercise(currentExercise.id, newExercise);
-  } catch (error) {
-    console.error('Error swapping exercise:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+    setIsSwapping(true);
+    fetchRandomExercises(exercise.target);
+  };
 
 
 
-  return (
+
+
+    return (
     <TouchableOpacity activeOpacity={1} onPress={openYoutubeVideo}>
       <LinearGradient
         colors={['#1A1A1D', '#1A1A1D']}
@@ -127,6 +167,7 @@ const ExerciseCard = ({ exercise, onStartLogging, navigation, swapExercise }) =>
     </TouchableOpacity>
   );
 };
+
 
 
 
@@ -339,6 +380,7 @@ swapButtonText: {
     marginBottom: 20,
     color: '#FFFFFF',
   },
+
 });
 
 export default ExerciseCardWrapper;

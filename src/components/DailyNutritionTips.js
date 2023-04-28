@@ -7,17 +7,24 @@ import {
   Image,
   Linking,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 
+
+
+
 const DailyNutritionTips = ({ navigation }) => {
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     fetchRecipes();
   }, []);
 
   const fetchRecipes = async () => {
+    setLoading(true);
     try {
       const options = {
         method: 'GET',
@@ -34,8 +41,10 @@ const DailyNutritionTips = ({ navigation }) => {
         .sort(() => Math.random() - 0.5)
         .slice(0, 8);
       setRecipes(randomRecipes);
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -64,7 +73,13 @@ const DailyNutritionTips = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Daily Nutrition Ideas</Text>
-      <ScrollView>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0E7C7B" />
+          <Text style={styles.loadingMessage}>Loading...</Text>
+        </View>
+      ) : (
+          <ScrollView>
         <View style={styles.container}>
           {recipes.map((recipe, index) => (
             <View key={index} style={styles.recipeItem}>
@@ -87,6 +102,7 @@ const DailyNutritionTips = ({ navigation }) => {
           ))}
         </View>
       </ScrollView>
+    )}
     </View>
   );
 };
@@ -137,6 +153,16 @@ const styles = StyleSheet.create({
   randomizeMealButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingMessage: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    marginTop: 10,
   },
 });
 

@@ -1,6 +1,46 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getLatestExerciseLog = /* GraphQL */ `
+  query GetLatestExerciseLog($exerciseName: String!, $userId: ID!) {
+    getLatestExerciseLog(exerciseName: $exerciseName, userId: $userId) {
+      id
+      exerciseName
+      date
+      reps
+      weights
+      user {
+        id
+        profile {
+          id
+          name
+          age
+          weight
+          height
+          gender
+          fitnessGoal
+          workoutDays
+          updatedAt
+          avatar
+          createdAt
+          owner
+        }
+        profileId
+        lastUpdated
+        exerciseLogs {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      userId
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -15,6 +55,7 @@ export const getUser = /* GraphQL */ `
         fitnessGoal
         workoutDays
         updatedAt
+        avatar
         user {
           id
           profileId
@@ -75,6 +116,7 @@ export const listUsers = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -103,6 +145,7 @@ export const getUserProfile = /* GraphQL */ `
       fitnessGoal
       workoutDays
       updatedAt
+      avatar
       user {
         id
         profile {
@@ -115,6 +158,7 @@ export const getUserProfile = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -157,6 +201,7 @@ export const listUserProfiles = /* GraphQL */ `
         fitnessGoal
         workoutDays
         updatedAt
+        avatar
         user {
           id
           profileId
@@ -192,6 +237,7 @@ export const getExerciseLog = /* GraphQL */ `
           fitnessGoal
           workoutDays
           updatedAt
+          avatar
           createdAt
           owner
         }
@@ -249,35 +295,6 @@ export const listExerciseLogs = /* GraphQL */ `
     }
   }
 `;
-
-export const listExerciseLogsByUser = /* GraphQL */ `
-  query ListExerciseLogsByUser(
-    $userId: ID!
-    $filter: ModelExerciseLogFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listExerciseLogsByUser(
-      userId: $userId
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        exerciseName
-        date
-        reps
-        weights
-        userId
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-
 export const exerciseLogsByUserIdAndDate = /* GraphQL */ `
   query ExerciseLogsByUserIdAndDate(
     $userId: ID!

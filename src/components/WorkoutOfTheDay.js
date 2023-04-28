@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Loading from '../components/Loading';
+
 
 const challenges = [
   {
@@ -79,13 +81,28 @@ const ChallengeCard = ({ item, onCompletionToggle }) => {
 };
 
 const WorkoutOfTheDay = ({ navigation }) => {
-  const [challengeList, setChallengeList] = useState(challenges);
+  const [loading, setLoading] = useState(true);
+  const [challengeList, setChallengeList] = useState([]);
+
+  useEffect(() => {
+    fetchWorkouts().then((workouts) => {
+      setChallengeList(workouts);
+      setLoading(false);
+    });
+  }, []);
+
+const fetchWorkouts = async () => {
+    // Add your actual data fetching logic here
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    return challenges;
+  };
+
 
   const toggleCompletion = (id) => {
     setChallengeList((prevList) =>
       prevList.map((challenge) =>
         challenge.id === id
-          ? { ...challenge, completed: !challenge.completed }
+                    ? { ...challenge, completed: !challenge.completed }
           : challenge,
       ),
     );
@@ -93,19 +110,27 @@ const WorkoutOfTheDay = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Workout of the Day</Text>
-      <FlatList
-        data={challengeList}
-        renderItem={({ item }) => (
-          <ChallengeCard item={item} onCompletionToggle={toggleCompletion} />
-        )}
-                keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.challengeList}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Text style={styles.title}>Workout of the Day</Text>
+          <FlatList
+            data={challengeList}
+            renderItem={({ item }) => (
+              <ChallengeCard item={item} onCompletionToggle={toggleCompletion} />
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.challengeList}
+          />
+        </>
+      )}
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

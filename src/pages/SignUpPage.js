@@ -6,6 +6,7 @@ import { Alert } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
 import CustomInput from '../components/CustomInput';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ActivityIndicator } from 'react-native';
 
 
 const SignUpPage = ({ navigation }) => {
@@ -17,6 +18,8 @@ const SignUpPage = ({ navigation }) => {
   const [confirmation, setConfirmation] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   const validateFields = () => {
     let errorMessage = '';
@@ -46,27 +49,32 @@ const SignUpPage = ({ navigation }) => {
   };
 
   const signUp = async () => {
-    if (!validateFields()) {
-      return;
-    }
+  if (!validateFields()) {
+    return;
+  }
 
-    try {
-      const { user } = await Auth.signUp({
-        username: email,
-        password: password,
-        attributes: {
-          email: email,
-          name: name,
-          phone_number: phoneNumber,
-        },
-      });
-      console.log(user);
-      setConfirmation(true);
-    } catch (err) {
-      console.error('Error signing up:', err);
-      Alert.alert('Error signing up', err.message);
-    }
-  };
+  setLoading(true);
+
+  try {
+    const { user } = await Auth.signUp({
+      username: email,
+      password: password,
+      attributes: {
+        email: email,
+        name: name,
+        phone_number: phoneNumber,
+      },
+    });
+    console.log(user);
+    setConfirmation(true);
+  } catch (err) {
+    console.error('Error signing up:', err);
+    Alert.alert('Error signing up', err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const confirmSignUp = async () => {
     try {
@@ -77,6 +85,15 @@ const SignUpPage = ({ navigation }) => {
       Alert.alert('Error confirming sign up', err.message);
     }
   };
+
+  if (loading) {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#0E7C7B" />
+    </View>
+  );
+}
+
 
   return (
     <View style={styles.container}>
@@ -205,6 +222,12 @@ const styles = StyleSheet.create({
     top: 40,
     left: 16,
   },
+  loadingContainer: {
+  flex: 1,
+  backgroundColor: '#1A1A1D',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 });
 
 export default SignUpPage;
