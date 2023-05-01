@@ -11,7 +11,7 @@ const API_KEY = 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865';
 
 const ExerciseDetailsScreen = ({ route, navigation }) => {
   const { id, workoutSessionId } = route.params;
-  const [exercise, setExercise] = React.useState({ ...exercise, videoId: null });
+  const [exercise, setExercise] = React.useState({ name: '', videoId: null });
 
   useEffect(() => {
     const fetchYoutubeVideo = async () => {

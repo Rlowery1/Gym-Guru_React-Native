@@ -1,5 +1,5 @@
 // src/pages/MainAppPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
@@ -16,6 +16,9 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
+  FlatList,
+  Dimensions,
+  Linking,
 } from 'react-native';
 import ProfileEditScreen from './ProfileEditScreen';
 import ProfileScreen from './ProfileScreen';
@@ -27,91 +30,23 @@ import WorkoutDay from '../components/WorkoutDay';
 import ProgressScreen from './ProgressScreen';
 import { listExerciseLogs } from '../graphql/queries';
 import CommonStyles from '../styles/GlobalStyles';
-import yourLogo from '../../assets/GainGuru_logo.png';
+import yourLogo from '../../assets/gymguru-high-resolution-logo-color-on-transparent-background.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DailyNutritionTips from '../components/DailyNutritionTips';
 import SocialFeed from '../components/SocialFeed';
 import FeaturedChallenges from '../components/FeaturedChallenges';
 import WorkoutOfTheDay from '../components/WorkoutOfTheDay';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import YoutubePlayerScreen from '../components/YoutubePlayerScreen';
 
 
 
 
-const DailyNutritionTipsStack = createStackNavigator();
 
-const DailyNutritionTipsStackNavigator = () => {
-  return (
-    <DailyNutritionTipsStack.Navigator>
-      <DailyNutritionTipsStack.Screen
-        name="DailyNutritionTips"
-        component={DailyNutritionTips}
-        options={{ headerShown: false }}
-      />
-      <DailyNutritionTipsStack.Screen
-        name="DailyNutritionTipsDetails"
-        component={DailyNutritionTipsDetails}
-        options={{ headerShown: false }}
-      />
-    </DailyNutritionTipsStack.Navigator>
-  );
-};
 
-const SocialFeedStack = createStackNavigator();
 
-const SocialFeedStackNavigator = () => {
-  return (
-    <SocialFeedStack.Navigator>
-      <SocialFeedStack.Screen
-        name="SocialFeed"
-        component={SocialFeed}
-        options={{ headerShown: false }}
-      />
-      <SocialFeedStack.Screen
-        name="SocialFeedDetails"
-        component={SocialFeedDetails}
-        options={{ headerShown: false }}
-      />
-    </SocialFeedStack.Navigator>
-  );
-};
 
-const FeaturedChallengesStack = createStackNavigator();
-
-const FeaturedChallengesStackNavigator = () => {
-  return (
-    <FeaturedChallengesStack.Navigator>
-      <FeaturedChallengesStack.Screen
-        name="FeaturedChallenges"
-        component={FeaturedChallenges}
-        options={{ headerShown: false }}
-      />
-      <FeaturedChallengesStack.Screen
-        name="FeaturedChallengesDetails"
-        component={FeaturedChallengesDetails}
-        options={{ headerShown: false }}
-      />
-    </FeaturedChallengesStack.Navigator>
-  );
-};
-
-const WorkoutOfTheDayStack = createStackNavigator();
-
-const WorkoutOfTheDayStackNavigator = () => {
-  return (
-    <WorkoutOfTheDayStack.Navigator>
-      <WorkoutOfTheDayStack.Screen
-        name="WorkoutOfTheDay"
-        component={WorkoutOfTheDay}
-        options={{ headerShown: false }}
-      />
-      <WorkoutOfTheDayStack.Screen
-        name="WorkoutOfTheDayDetails"
-        component={WorkoutOfTheDayDetails}
-        options={{ headerShown: false }}
-      />
-    </WorkoutOfTheDayStack.Navigator>
-  );
-};
 
 
 const LoadingScreen = ({ isLoading, children }) => {
@@ -126,6 +61,8 @@ const LoadingScreen = ({ isLoading, children }) => {
 };
 
 
+const API_KEY = 'AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4';
+
 const HomeScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState('');
@@ -134,6 +71,19 @@ const HomeScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredExercises, setFilteredExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const YOUTUBE_API_KEY = 'AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4';
+  const [searchText, setSearchText] = useState('');
+
+
+
+
+
+
+
+
+
+
+
 
 
   const handleNavigation = async (screen) => {
@@ -143,20 +93,61 @@ const HomeScreen = ({ navigation }) => {
   };
 
 
-  const filterExercises = (query) => {
-  if (query === '') {
-    setFilteredExercises([]);
-  } else {
-    const filtered = allExercises.filter((exercise) =>
-      exercise.name.toLowerCase().includes(query.toLowerCase()),
-    );
-    setFilteredExercises(filtered);
-  }
+  const openYouTubeVideo = (videoId) => {
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  Linking.canOpenURL(videoUrl).then((supported) => {
+    if (supported) {
+      Linking.openURL(videoUrl);
+    } else {
+      console.log(`Don't know how to open this URL: ${videoUrl}`);
+    }
+  });
 };
 
-  useEffect(() => {
-    filterExercises(searchQuery);
-  }, [searchQuery]);
+
+  const handleYoutubeSearch = async (searchText) => {
+    setSearchQuery(searchText);
+    searchYoutubeVideos(searchText);
+  };
+
+  const searchYoutubeVideos = useCallback(async (searchText) => {
+    try {
+      const options = {
+        method: 'GET',
+        url: 'https://www.googleapis.com/youtube/v3/search',
+        params: {
+          part: 'snippet',
+          maxResults: 5,
+          q: searchText,
+          type: 'video',
+          key: YOUTUBE_API_KEY,
+        },
+      };
+
+    const response = await axios.request(options);
+      const videos = response.data.items
+        .filter((item) => item.snippet && item.snippet.title && item.id && item.id.videoId)
+        .map((item) => {
+          return {
+            title: item.snippet.title,
+            videoId: item.id.videoId,
+            thumbnail: item.snippet.thumbnails.high.url,
+          };
+        });
+      setFilteredExercises(videos);
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  }, [searchText]);
+
+
+
+
+
+
+
+
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -205,76 +196,126 @@ const HomeScreen = ({ navigation }) => {
 
       fetchUserData();
       fetchExerciseLogs();
-    }, []),
+
+    }, [userId])
   );
+     const getWelcomeMessage = () => {
+    if (userData && userData.name) {
+      const currentHour = new Date().getHours();
+      if (currentHour >= 5 && currentHour < 12) {
+        return `Good morning, ${userData.name}!`;
+      } else if (currentHour >= 12 && currentHour < 18) {
+        return `Good afternoon, ${userData.name}!`;
+      } else {
+        return `Good evening, ${userData.name}!`;
+      }
+    } else {
+      return 'Welcome!';
+    }
+  };
+
 
   if (!userData) {
-      return (
-        <View style={styles.homeContainer}>
-          <Text style={[CommonStyles.title, { color: '#FFFFFF' }]}>Welcome!</Text>
-          <TouchableOpacity
+    return (
+      <View style={styles.homeContainer}>
+        <TouchableOpacity
           style={styles.profileButton}
           onPress={() => navigation.navigate('Profile', { screen: 'ProfileEdit' })}
         >
           <Text style={styles.profileButtonText}>Create your profile</Text>
         </TouchableOpacity>
-        </View>
-      );
-    }
+      </View>
+    );
+  }
 
-return (
-    <SafeAreaView style={styles.container}>
-      <LoadingScreen isLoading={isLoading}>
-        <ScrollView>
-            <View style={styles.logoContainer}>
-              <Image source={yourLogo} style={styles.logo} />
-            </View>
-            <View style={styles.searchBarContainer}>
-              <TextInput
-                style={styles.searchBar}
-                placeholder="Search for exercises or workouts"
-                onChangeText={text => setSearchQuery(text)}
-                value={searchQuery}
+ return (
+  <SafeAreaView style={styles.container}>
+    <Text style={styles.welcomeMessage}>{getWelcomeMessage()}</Text>
+    <LoadingScreen isLoading={isLoading}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContentContainer}
+        style={styles.scrollView}
+      >
+        <View style={styles.logoContainer}>
+        <Image source={yourLogo} style={styles.logo} resizeMode="contain" />
+      </View>
+      <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search for exercises or workouts"
+              placeholderTextColor="#1A1A1A" // Add this line to change the color of the placeholder text
+              onChangeText={text => setSearchText(text)}
+              value={searchText}
+              returnKeyType="search"
+              onSubmitEditing={() => searchYoutubeVideos(searchText)}
+            />
+            <Ionicons
+              name="ios-search"
+              size={24}
+              color="#1A1A1A"
+              style={styles.searchIcon}
+              onPress={() => searchYoutubeVideos(searchText)}
+            />
+          </View>
+      <View style={styles.cardsContainer}>
+        <TouchableOpacity
+          style={[styles.card, styles.dailyNutritionCard]}
+          onPress={() => handleNavigation('DailyNutritionTipsScreen')}
+        >
+          <Text style={styles.cardText}>Daily Nutrition Ideas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.card, styles.socialFeedCard]}
+          onPress={() => handleNavigation('SocialFeedScreen')}
+        >
+          <Text style={styles.cardText}>Social Feed</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.card, styles.featuredChallengesCard]}
+          onPress={() => handleNavigation('FeaturedChallengesScreen')}
+        >
+          <Text style={styles.cardText}>Featured Challenges</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.card, styles.workoutOfTheDayCard]}
+          onPress={() => handleNavigation('WorkoutOfTheDayScreen')}
+        >
+          <Text style={styles.cardText}>Workout Of The Day</Text>
+        </TouchableOpacity>
+      </View>
+       <View style={styles.exercisesContainer}>
+            {filteredExercises.length > 0 && (
+              <Text style={styles.exercisesTitle}>Search Results:</Text>
+            )}
+        <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: 'center',
+                paddingHorizontal: 20,
+              }}
+              style={{ backgroundColor: "#1A1A1D" }}
+            >
+          {filteredExercises.map((exercise, index) => (
+              <TouchableOpacity
+                key={index}
+              style={styles.exerciseItem}
+              onPress={() => openYouTubeVideo(exercise.videoId)}
+              >
+              <Image
+              source={{ uri: exercise.thumbnail }}
+              style={styles.exerciseImage}
               />
-            </View>
-            <View style={styles.exercisesContainer}>
-              {filteredExercises.map((exercise, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.exerciseItem}
-            onPress={() => navigation.navigate('ExerciseDetails', { exerciseId: exercise.id })}
-          >
-            <Text style={styles.exerciseName}>{exercise.name}</Text>
-          </TouchableOpacity>
+              <View style={styles.exerciseDetails}>
+              <Text style={styles.exerciseTitle}>{exercise.title}</Text>
+              <Text style={styles.exerciseChannel}>
+              {exercise.channelTitle}
+              </Text>
+              </View>
+            </TouchableOpacity>
           ))}
-        </View>
-        <View style={styles.cardsContainer}>
-          <TouchableOpacity
-            style={[styles.card, styles.dailyNutritionCard]}
-            onPress={() => handleNavigation('DailyNutritionTipsScreen')}
-          >
-            <Text style={styles.cardText}>Daily Nutrition Ideas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.card, styles.socialFeedCard]}
-            onPress={() => handleNavigation('SocialFeedScreen')}
-          >
-            <Text style={styles.cardText}>Social Feed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.card, styles.featuredChallengesCard]}
-            onPress={() => handleNavigation('FeaturedChallengesScreen')}
-          >
-            <Text style={styles.cardText}>Featured Challenges</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.card, styles.workoutOfTheDayCard]}
-            onPress={() => handleNavigation('WorkoutOfTheDayScreen')}
-          >
-            <Text style={styles.cardText}>Workout Of The Day</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+          </View>
+        </ScrollView>
       </LoadingScreen>
     </SafeAreaView>
   );
@@ -290,29 +331,34 @@ name="Profile"
 component={ProfileScreen} // Use the imported ProfileScreen
 options={{ headerShown: false }}
 />
-<ProfileStack.Screen name="ProfileEdit" component={ProfileEditScreen} />
+<ProfileStack.Screen name="ProfileEdit" component={ProfileEditScreen} options={{ headerShown: false }} />
 </ProfileStack.Navigator>
 );
 };
 const WorkoutStack = createStackNavigator();
 
 const WorkoutStackNavigator = () => {
-return (
-<WorkoutStack.Navigator>
-<WorkoutStack.Screen
-name="Workout"
-component={WorkoutScreen}
-options={{ headerShown: false }}
-/>
-<WorkoutStack.Screen name="WorkoutDay" component={WorkoutDay} />
-</WorkoutStack.Navigator>
-);
+  return (
+    <WorkoutStack.Navigator>
+      <WorkoutStack.Screen
+        name="Workout"
+        component={WorkoutScreen}
+        options={{ headerShown: false }}
+      />
+      <WorkoutStack.Screen name="WorkoutDay" component={WorkoutDay} options={{ headerShown: false }} />
+      <WorkoutStack.Screen name="ExerciseDetails" component={YoutubePlayerScreen} />
+    </WorkoutStack.Navigator>
+  );
 };
+
 
 const Tab = createBottomTabNavigator();
 
-const MainAppPage = () => {
+const MainAppPage = ({ navigation }) => {
 const [username, setUsername] = useState('');
+const [searchQuery, setSearchQuery] = useState('');
+const [videoResults, setVideoResults] = useState([]);
+
 useEffect(() => {
 const fetchUser = async () => {
 try {
@@ -326,79 +372,144 @@ const user = await Auth.currentAuthenticatedUser();
 fetchUser();
   }, []);
 
-      return (
-      <View style={styles.container}>
-      <Text style={styles.title}>Hello, {username}!</Text>
-      <Text style={styles.subtitle}>Welcome to GymGuru!</Text>
-      <Tab.Navigator
-  screenOptions={({ route }) => ({
-    tabBarIcon: ({ focused, color, size }) => {
-      let iconName;
+useEffect(() => {
+    if (searchQuery.length > 0) {
+      const fetchData = async () => {
+        const response = await axios.get(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${searchQuery}&type=video&key=${API_KEY}`,
+        );
+        setVideoResults(response.data.items);
+      };
+      fetchData();
+    } else {
+      setVideoResults([]);
+    }
+  }, [searchQuery]);
 
-      if (route.name === 'Home') {
-        iconName = focused ? 'ios-home' : 'ios-home-outline';
-      } else if (route.name === 'Workout') {
-        iconName = focused ? 'ios-fitness' : 'ios-fitness-outline';
-      } else if (route.name === 'Progress') {
-        iconName = focused ? 'ios-stats-chart' : 'ios-stats-chart-outline';
-      } else if (route.name === 'Profile') {
-        iconName = focused ? 'ios-person' : 'ios-person-outline';
-      }
-
-      return <Ionicons name={iconName} size={size} color={color} />;
-    },
-    tabBarActiveTintColor: '#0E7C7B',
-    tabBarInactiveTintColor: '#E6E6E6',
-    tabBarStyle: { backgroundColor: '#1A1A1D' },
-  })}
->
-  <Tab.Screen name="Home" component={HomeScreen} />
-  <Tab.Screen name="Workout" component={WorkoutStackNavigator} />
-  <Tab.Screen name="Progress" component={ProgressScreen} />
-  <Tab.Screen name="Profile" component={ProfileStackNavigator} />
-  <Tab.Screen name="DailyNutritionTipsScreen" component={DailyNutritionTips} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="SocialFeedScreen" component={SocialFeed} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="FeaturedChallengesScreen" component={FeaturedChallenges} options={{ tabBarButton: () => null }} />
-  <Tab.Screen name="WorkoutOfTheDayScreen" component={WorkoutOfTheDay} options={{ tabBarButton: () => null }} />
-</Tab.Navigator>
-</View>
+  const renderItem = ({ item }) => {
+  const videoId = item.id && item.id.videoId ? item.id.videoId : null;
+  return (
+    <TouchableOpacity
+      style={styles.resultItem}
+      onPress={() =>
+        navigation.navigate('VideoPlayer', { videoId: videoId })
+      }>
+      <Image
+        style={styles.thumbnail}
+        source={{ uri: item.snippet.thumbnails.default.url }}
+      />
+      <Text style={styles.resultTitle}>{item.snippet.title}</Text>
+    </TouchableOpacity>
   );
+};
+
+      return (
+  <>
+    <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Home') {
+          iconName = focused ? 'ios-home' : 'ios-home-outline';
+        } else if (route.name === 'Workout') {
+          iconName = focused ? 'ios-fitness' : 'ios-fitness-outline';
+        } else if (route.name === 'Progress') {
+          iconName = focused ? 'ios-stats-chart' : 'ios-stats-chart-outline';
+        } else if (route.name === 'Profile') {
+          iconName = focused ? 'ios-person' : 'ios-person-outline';
+        }
+
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: '#0E7C7B',
+      tabBarInactiveTintColor: '#E6E6E6',
+      tabBarStyle: { backgroundColor: '#1A1A1D' },
+      tabBarShowLabel: true, // Show labels for all screens
+      headerShown: false // Hide header for all screens
+    })}
+  >
+    <Tab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{ tabBarLabel: 'Home' }}
+    />
+    <Tab.Screen
+      name="Workout"
+      component={WorkoutStackNavigator}
+      options={{ tabBarLabel: 'Workout' }}
+    />
+    <Tab.Screen
+      name="Progress"
+      component={ProgressScreen}
+      options={{ tabBarLabel: 'Progress' }}
+    />
+    <Tab.Screen
+      name="Profile"
+      component={ProfileStackNavigator}
+      options={{ tabBarLabel: 'Profile' }}
+    />
+    <Tab.Screen
+      name="DailyNutritionTipsScreen"
+      component={DailyNutritionTips}
+      options={{ tabBarButton: () => null, tabBarLabel: 'Tips' }}
+    />
+    <Tab.Screen
+      name="SocialFeedScreen"
+      component={SocialFeed}
+      options={{ tabBarButton: () => null, tabBarLabel: 'Social' }}
+    />
+    <Tab.Screen
+      name="FeaturedChallengesScreen"
+      component={FeaturedChallenges}
+      options={{ tabBarButton: () => null, tabBarLabel: 'Challenges' }}
+    />
+    <Tab.Screen
+      name="WorkoutOfTheDayScreen"
+      component={WorkoutOfTheDay}
+      options={{ tabBarButton: () => null, tabBarLabel: 'Workout of the Day' }}
+    />
+  </Tab.Navigator>
+  </>
+);
+
 };
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1A1D',
+    backgroundColor: '#1A1A1D', // Change the background color
   },
   logoContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    padding: 20,
+    paddingTop: 40,
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: Dimensions.get('window').width * 0.7, // Increase logo size
+    height: Dimensions.get('window').height * 0.37, // Increase logo size
+    marginBottom: 20, // Add space below the logo
   },
   searchBarContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  searchBar: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    color: '#1A1A1D',
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingHorizontal: 10,
+  backgroundColor: '#FFF',
+  borderRadius: 25,
+  margin: 15,
   },
   exercisesContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
+  paddingHorizontal: 10,
   },
   exerciseItem: {
-    backgroundColor: '#0E7C7B',
-    borderRadius: 5,
-    padding: 15,
-    marginBottom: 10,
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#FFF',
+  borderRadius: 10,
+  marginBottom: 10,
+  padding: 10,
   },
   exerciseName: {
     color: '#FFFFFF',
@@ -428,12 +539,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   searchIcon: {
-    position: 'absolute',
-    right: 15,
-    top: 12,
+    marginRight: 16,
   },
   dashboardContainer: {
     marginTop: 20,
+
   },
   dashboardCard: {
     backgroundColor: '#2A2A2D',
@@ -453,6 +563,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
+
   },
   dashboardNumber: {
     color: '#FFFFFF',
@@ -528,9 +639,9 @@ const styles = StyleSheet.create({
   },
   homeContainer: {
     flex: 1,
-    backgroundColor: '#1A1A1D',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1D', // Change the background color
   },
   dailyNutritionCard: {
     backgroundColor: '#0E7C7B',
@@ -550,6 +661,102 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1A1A1D',
   },
+  exercisesTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#1A1A1A',
+  marginTop: 10,
+  marginBottom: 10,
+  },
+ exercisesGrid: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    maxHeight: Dimensions.get('window').height * 0.4, // Set a fixed height for the ScrollView
+  },
+  searchBar: {
+    flex: 1,
+    padding: 8,
+    paddingLeft: 16,
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  resultItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
+  resultTitle: {
+    marginLeft: 10,
+    fontSize: 16,
+    flexShrink: 1,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 30,
+  },
+
+  thumbnailContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  thumbnail: {
+    width: 90,
+    height: 60,
+    marginRight: 10,
+  },
+  thumbnailTitle: {
+    fontSize: 14,
+    color: '#E6E6E6',
+  },
+  exercisesGridContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  exerciseImage: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+  },
+  exerciseTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#1A1A1A',
+  },
+  exerciseDetails: {
+  marginLeft: 10,
+  },
+  exerciseChannel: {
+  fontSize: 12,
+  color: '#1A1A1A',
+  },
+  scrollViewContentContainer: {
+    flexGrow: 1,
+
+  },
+   welcomeMessage: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+    color: '#FFFFFF',
+  },
+
+
 
 });
 

@@ -1,17 +1,16 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
-const CustomInput = ({ onChangeText, value, ...props }) => {
+
+
+
+const CustomInput = ({ style, ...props }) => {
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={value}
-        placeholderTextColor="#FFFFFF"
-        {...props}
-      />
-    </View>
+    <TextInput
+      style={[styles.input, style]}
+      placeholderTextColor="#ffffff"
+      {...props}
+    />
   );
 };
 
@@ -21,14 +20,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
-    width: '100%',
-    height: 40,
-    paddingHorizontal: 8,
+    height: 48, // increase the height
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#E6E6E6',
-    borderRadius: 5,
-    backgroundColor: '#1A1A1D',
-    color: '#FFFFFF',
+    borderRadius: 15, // adjust the border-radius
+    paddingLeft: 16, // adjust the padding
+    paddingRight: 16, // adjust the padding
+    marginBottom: 10,
+    backgroundColor: '#2C2C2E',
+    color: '#E6E6E6',
+    fontSize: 16,
+    width: '75%',
+    minWidth: 300,
   },
 });
 

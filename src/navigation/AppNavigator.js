@@ -11,7 +11,6 @@ import ExerciseDetailsScreen from '../pages/ExerciseDetailsScreen';
 import WebViewScreen from '../pages/WebViewScreen';
 import YoutubeVideoScreen from '../pages/WebViewScreen';
 
-
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -50,16 +49,28 @@ const AppNavigator = () => {
       <Stack.Screen
         name="ExerciseDetails"
         component={ExerciseDetailsScreen}
-        options={{ headerTitle: 'Exercise Details' }}
+        options={{
+          headerTitle: 'Exercise Details',
+          headerStyle: { backgroundColor: '#1A1A1D' },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
         name="WebView"
         component={WebViewScreen}
-        options={{ headerTitle: 'WebView' }}
+        options={{
+          headerTitle: 'WebView',
+          headerStyle: { backgroundColor: '#1A1A1D' },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
-          name="YoutubeVideo"
-          component={YoutubeVideoScreen}
+        name="YoutubeVideo"
+        component={YoutubeVideoScreen}
+        options={{
+          headerStyle: { backgroundColor: '#1A1A1D' },
+          headerTintColor: '#FFFFFF',
+        }}
       />
     </Stack.Navigator>
   );

@@ -1,26 +1,65 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Animated,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomePage = ({ navigation }) => {
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+  const buttonTranslateY = useRef(new Animated.Value(50)).current;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      Animated.parallel([
+        Animated.timing(logoOpacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonTranslateY, {
+          toValue: 0,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      return () => {
+        logoOpacity.setValue(0);
+        buttonTranslateY.setValue(50);
+      };
+    }, []),
+  );
+
   return (
     <View style={styles.container}>
+      <Animated.Image
+        style={[styles.logo, { opacity: logoOpacity }]}
+        source={require('../../assets/gymguru-high-resolution-logo-color-on-transparent-background.png')}
+        resizeMode="contain"
+      />
       <Text style={styles.title}>Welcome to GymGuru!</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('SignUp')}
-      >
-        <Icon name="user-plus" size={18} color="#FFFFFF" style={styles.icon} />
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('SignIn')}
-      >
-        <Icon name="sign-in" size={18} color="#FFFFFF" style={styles.icon} />
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
+      <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('SignUp')}
+        >
+          <Icon name="user-plus" size={18} color="#FFFFFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('SignIn')}
+        >
+          <Icon name="sign-in" size={18} color="#FFFFFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Sign In</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -32,6 +71,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1A1A1D',
     paddingHorizontal: 16,
+  },
+  logo: {
+    width: 300,
+    height: 320,
+    marginBottom: 20,
   },
   title: {
     fontSize: 36,

@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: '#1A1A1D',
     flex: 1,
+    paddingTop: 50, // Add this line to increase the top padding
   },
   container: {
     borderRadius: 10,
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
+    paddingTop: 10, // Add this line to increase the top padding for the title
   },
   recipeItem: {
     flexDirection: 'row',

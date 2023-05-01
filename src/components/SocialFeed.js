@@ -7,18 +7,51 @@ import {
   FlatList,
   Image,
   Dimensions,
+  SafeAreaView,
+  Animated,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import myImage from '../../assets/cover_photo_1.png'
 import gymPhoto from '../../assets/gym_photo.jpg';
 import runningPhoto from '../../assets/running_photo.jpg';
 import Loading from '../components/Loading';
+import { Easing } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 
 
-const PostItem = ({ item, onDelete }) => {
+
+
+
+
+
+const PostItem = ({ item, onDelete, index }) => {
   const postImage = item.text === 'Great workout today!' ? gymPhoto : runningPhoto;
+  const fadeIn = new Animated.Value(0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fadeIn.setValue(0);
+      Animated.timing(fadeIn, {
+        toValue: 1,
+        duration: 500,
+        delay: 100 * index,
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+      return () => {}; // Return an empty cleanup function
+    }, [])
+  );
+
+
   return (
-    <View style={styles.postContainer}>
+    <Animated.View style={[styles.postContainer, { opacity: fadeIn }]}>
+      <LinearGradient
+        colors={['#252525', '#1A1A1D']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradient}
+      >
       <View style={styles.postHeader}>
         <Image style={styles.avatar} source={myImage} />
         <Text style={styles.username}>{item.username}</Text>
@@ -28,9 +61,12 @@ const PostItem = ({ item, onDelete }) => {
       </View>
       <Image style={styles.postImage} source={postImage} />
       <Text style={styles.postText}>{item.text}</Text>
-    </View>
+    </LinearGradient>
+    </Animated.View>
   );
 };
+
+
 
 const SocialFeed = () => {
   const [data, setData] = useState([
@@ -66,35 +102,44 @@ const SocialFeed = () => {
     setData(data.filter((post) => post.id !== id));
   };
 
-  const renderItem = ({ item }) => <PostItem item={item} onDelete={removePost} />;
+  const renderItem = ({ item, index }) => (
+  <PostItem item={item} onDelete={removePost} index={index} />
+);
+
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <View style={styles.header}>
-        <Text style={styles.title}>Social Feed</Text>
-        <TouchableOpacity onPress={addNewPost}>
-          <Icon name="add-circle" size={30} color="#0E7C7B" />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <View style={styles.container}>
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Text style={styles.title}>Social Feed</Text>
+              <TouchableOpacity onPress={addNewPost} style={styles.addButton}>
+                <Icon name="add-circle" size={40} color="#0E7C7B" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </>
+        )}
       </View>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </>
-      )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+
+  safeAreaContainer: {
     flex: 1,
     backgroundColor: '#1A1A1D',
+  },
+  container: {
+    flex: 1,
     padding: 10,
   },
   title: {
@@ -104,7 +149,7 @@ const styles = StyleSheet.create({
   },
   postContainer: {
     backgroundColor: '#252525',
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 10,
     overflow: 'hidden',
     elevation: 5,
@@ -140,11 +185,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    paddingTop: 15, // Add padding to the top of the header
   },
   deleteButton: {
     marginLeft: 'auto',
     marginRight: 10,
   },
+  gradient: {
+    flex: 1,
+    borderRadius: 10,
+  },
+
+
+
 });
 
 export default SocialFeed;

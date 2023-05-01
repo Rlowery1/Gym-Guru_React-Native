@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, TextInput, Image, Animated, Linking } from 'react-native';
 import { getWorkout } from '../data/workouts';
 import WorkoutCard from '../components/WorkoutCard';
 import WorkoutDaysSelector from '../components/WorkoutDaysSelector';
@@ -30,6 +30,9 @@ const WorkoutScreen = ({ onDaysChange }) => {
   const fadeAnim = useState(new Animated.Value(0))[0];
   const headerTextRef = React.useRef(null);
   const [animatedValue] = useState(new Animated.Value(0));
+  const YOUTUBE_API_KEY = "AIzaSyCrpCL8JdtQaUXYnmA9wNQezOrN4YZwle4";
+
+
 
 
 
@@ -123,34 +126,32 @@ useFocusEffect(
   };
 
   const searchYouTube = async () => {
-    const options = {
-      method: 'GET',
-      url: 'https://youtube-search-results.p.rapidapi.com/youtube-search/',
-      params: { q: searchInput },
-      headers: {
-        'X-RapidAPI-Key': 'ad388b1d98mshf2c7750256ea7d2p1e67fcjsn4d1a44336865',
-        'X-RapidAPI-Host': 'youtube-search-results.p.rapidapi.com',
-      },
-    };
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(
+    searchInput
+  )}&key=${YOUTUBE_API_KEY}&maxResults=10`;
 
-    try {
-      const response = await axios.request(options);
-      setSearchResults(response.data.items);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    const response = await axios.get(url);
+    setSearchResults(
+      response.data.items.slice(0, 3).map((item) => ({
+        id: item.id.videoId,
+        thumbnail: item.snippet.thumbnails.default.url,
+        title: item.snippet.title,
+        channelTitle: item.snippet.channelTitle,
+      }))
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const renderItem = ({ item, index }) => {
-  if (index >= 3) {
-    return null;
-  }
-
   return (
     <TouchableOpacity
       style={styles.resultCard}
       onPress={() => {
-        navigation.navigate('WebView', { uri: `https://www.youtube.com/watch?v=${item.id}` });
+        Linking.openURL(`https://www.youtube.com/watch?v=${item.id}`);
       }}
     >
       <Image style={styles.resultImage} source={{ uri: item.thumbnail }} />

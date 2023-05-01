@@ -2,17 +2,14 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import CommonStyles from '../styles/GlobalStyles';
-const CustomButton = ({ title, onPress, disabled }) => {
+const CustomButton = ({ title, onPress, style, ...props }) => {
   return (
-    <TouchableOpacity
-      style={[CommonStyles.customButton, disabled ? { opacity: 0.5 } : {}]}
-      onPress={onPress}
-      disabled={disabled}
-    >
-      <Text style={CommonStyles.buttonText}>{title}</Text>
+    <TouchableOpacity onPress={onPress} style={[styles.button, style]} {...props}>
+      <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
 };
+
 
 const styles = StyleSheet.create({
    button: {

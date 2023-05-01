@@ -19,7 +19,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { updateUserProfile } from '../graphql/mutations';
 import defaultAvatar from '../../assets/cover_photo_1.png';
-import logo from '../../assets/gainguru-high-resolution-logo-black-on-transparent-background.png';
+import logo from '../../assets/gymguru-high-resolution-logo-color-on-transparent-background.png';
 import LoadingScreen from '../components/Loading';
 
 const ProfileScreen = ({ navigation }) => {

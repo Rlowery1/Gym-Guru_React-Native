@@ -250,6 +250,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('chest', 3)),
           ...(await getExercisesByTarget('triceps', 2)),
           ...(await getExercisesByTarget('abs', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 15, 12, 12]);
         break;
@@ -376,6 +377,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('chest', 3)),
           ...(await getExercisesByTarget('triceps', 2)),
           ...(await getExercisesByTarget('abs', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 15, 12, 12]);
         break;
@@ -384,6 +386,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('back', 3)),
           ...(await getExercisesByTarget('biceps', 2)),
           ...(await getExercisesByTarget('abs', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 15, 12, 12]);
         break;
@@ -392,6 +395,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('shoulders', 3)),
           ...(await getExercisesByTarget('traps', 2)),
           ...(await getExercisesByTarget('abs', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 15, 12, 12]);
         break;
@@ -682,6 +686,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('chest', 3)),
           ...(await getExercisesByTarget('triceps', 3)),
           ...(await getExercisesByEquipment('dumbbell', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 12, 12, 10]);
         break;
@@ -690,6 +695,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('back', 3)),
           ...(await getExercisesByTarget('biceps', 3)),
           ...(await getExercisesByEquipment('cable', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
         ];
         exercises = assignSetsAndReps(exercises, 4, [15, 12, 12, 10]);
         break;
@@ -707,6 +713,7 @@ const WorkoutDay = ({ route }) => {
           ...(await getExercisesByBodyPart('shoulders', 3)),
           ...(await getExercisesByTarget('abs', 3)),
           ...(await getExercisesByEquipment('dumbbell', 2)),
+          ...(await getExercisesByEquipment('elliptical machine', 1)),
           ];
           exercises = assignSetsAndReps(exercises, 4, [15, 12, 12, 10]);
           break;
