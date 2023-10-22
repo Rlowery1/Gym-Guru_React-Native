@@ -21,6 +21,12 @@ Gym Guru is a fitness application built on the React Native framework designed t
 ![App Screenshot]
 
 (https://i.imgur.com/0zfRTqb.jpg)
+(https://i.imgur.com/72CPVap.jpg)
+(https://i.imgur.com/WsDrkty.jpg)
+(https://i.imgur.com/EfKyqVb.jpg)
+(https://i.imgur.com/pmJYnKO.jpg)
+(https://i.imgur.com/ovRS4xM.jpg)
+(https://i.imgur.com/VcLAEfF.jpg)
 
 ## Features
 
